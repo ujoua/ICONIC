@@ -1,17 +1,40 @@
+*
+{
+    box-sizing: border-box;
+    overscroll-behavior: contain; 
+    -webkit-overflow-scrolling: touch;
+}
+
 body
 {
     margin: 0;
     padding: 0;
+    height: auto;
     background-color: rgb(252, 227, 203);
+    
 }
 
 main
 {
-    width: max-content;
-    height: 87vh;
     border: 1.5px outset grey;
-    padding: 2vh 2vw;
-    background-color: rgb(255, 255, 250);
+    width: 100%; /* max-content는 삼성 인터넷 브라우저에서 튐 */
+    height: 90dvh;
+    
+    background-color: rgb(255, 255, 230);
+
+    /* min-width: 0; */
+    /* contain: layout paint; */
+    /* overflow-x: auto; */    
+    overflow-y: hidden;
+    
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Chrome, Safari, Opera */
+main::-webkit-scrollbar
+{
+    display: none;
 }
 
 .photo-gallery
@@ -34,13 +57,14 @@ main
     flex-direction: row;
     flex-wrap: wrap;
     align-items: flex-end;
-    gap: 4vw;
+    gap: 8vw;
 }
 
 img
 {
-    max-height: 80vh;
     border: 12px solid #f5f5f5;
+    max-width: 90vw;
+    max-height: 85dvh;
     box-shadow: 
     -1px 2px 4px rgba(0,0,0,0.3),
     -3px 4px 6px rgba(0,0,0,0.2),
@@ -51,4 +75,9 @@ img
 figcaption
 {
     color: grey;
+}
+
+p
+{
+    max-width: 94%;
 }
