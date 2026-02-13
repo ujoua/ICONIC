@@ -1,11 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('/photos')
+  fetch('/hypes')
     .then(res => res.json())
     .then(photos => {
-      console.log(photos);
       const gallery = document.querySelector('.gallery');
 
       photos.forEach((photo, index) => {
+        photo = photo.pid;
+
         const article = document.createElement('article');
         article.classList.add('gallery-item');
 
