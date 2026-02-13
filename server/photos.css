@@ -1,0 +1,32 @@
+* {
+    box-sizing: border-box;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: auto;
+    background-color: rgb(252, 227, 203);
+}
+
+.gallery {
+    column-count: 3;
+    column-gap: 15px;
+}
+
+.gallery img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    object-fit: cover;
+    break-inside: avoid;
+}
+
+@media (max-width: 600px) {
+    .gallery {
+        column-count: 1;
+    }
+}

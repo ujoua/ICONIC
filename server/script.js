@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         article.appendChild(img);
         article.appendChild(span);
 
-        gallery.appendChild(article);
+        gallery.insertBefore(article, gallery.lastElementChild);
       });
     })
     .catch(err => console.error('이미지 목록 불러오기 실패:', err));
