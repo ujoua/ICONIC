@@ -8,7 +8,7 @@ const app = express();
 const port = 3000;
 connect();
 
-app.use(express.static('.'))
+app.use(express.static('public'))
 
 app.use('/', indexRouter);
 app.use('/photos', photosRouter);
