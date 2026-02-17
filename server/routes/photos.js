@@ -4,10 +4,10 @@ const Photo = require('../schemas/photo');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const FormData = require('form-data');
 const axios = require('axios');
 
 const router = express.Router();
-// const upload = multer({ dest: path.join(__dirname, '../uploads/') });
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.route('/')
@@ -36,12 +36,15 @@ router.route('/:id')
 router.post('/upload', upload.single('photo'), async (req, res, next) => {
   try {
     const file = req.file;
+    const form = new FormData();
+    form.append('photo', req.file.buffer, {
+      filename: req.file.originalname,
+      contentType: req.file.mimetype
+    });
 
-    const response = await axios.post(
-      'http://localhost:4000/upload',
-      { photo: fs.createReadStream(file.path) },
-      { headers: { 'Content-Type': 'multipart/form-data' } }
-    );
+    const response = await axios.post('http://localhost:4000/upload', form, {
+      headers: form.getHeaders()
+    });
 
     const imageUrl = response.data.url;
 
@@ -57,10 +60,7 @@ router.post('/upload', upload.single('photo'), async (req, res, next) => {
 
     await newPhoto.save();
 
-    res.json({
-      message: 'File uploaded successfully!',
-      photo: newPhoto
-    });
+    res.json({ success: true, url: response.data.url });
   } catch (err) {
     console.error(err);
     next(err);

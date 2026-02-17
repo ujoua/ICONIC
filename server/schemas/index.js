@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
+const mongoUri = process.env.MONGO_URI;
+
 const connect = () => {
-  mongoose.connect('mongodb://localhost:27017/iconic', {
+  mongoose.connect(mongoUri, {
   }).then(async () => {
     console.log("몽고디비 연결 성공");
   }).catch((err) => {

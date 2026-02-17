@@ -4,3 +4,5 @@ uploads/
 photos/
 *.jpg
 *.png
+
+.env
