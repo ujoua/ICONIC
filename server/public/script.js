@@ -18,11 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const h3 = document.createElement('h3');
         h3.textContent = `《${photo.title}》`;
         const figcaption = document.createElement('figcaption');
-        figcaption.textContent = photo.earliestDate + photo.materials + photo.dimensons;
+        figcaption.innerHTML = `<div>${photo.earliestDate.slice(0, 10)}</div> <div>${photo.materials}</div> <div>${photo.dimensons}</div>`;
         const p = document.createElement('p');
-        p.textContent = `${photo.text}`;
+        p.innerHTML = `<strong>${photo.text}</strong>`;
         const tags = document.createElement('p');
         tags.textContent = `${photo.tags}`;
+        tags.style.color = 'darkblue';
 
         span.appendChild(h3);
         span.appendChild(figcaption);
