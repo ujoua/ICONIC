@@ -66,8 +66,7 @@ main::-webkit-scrollbar {
     align-items: flex-end;
     gap: 8vw;
 
-    /* animation: moveLeft 2s ease-in-out infinite alternate; */
-    animation: moveLeft 30s ease-in-out infinite alternate;
+    animation: moveLeft 3s ease-in 1 forwards;
 }
 
 .gallery:hover .gallery:active .gallery-item {
@@ -75,10 +74,9 @@ main::-webkit-scrollbar {
 }
 
 .gallery-item[alt="주제"] {
-    padding: 2%;
-    min-width: 16%;
-    min-height: 8%;
-    /* min-height: 40%; */
+    padding: 4vw;
+    min-width: 32vw;
+    min-height: 16vh;
     /* border: 1px solid black; */
     box-shadow:
         1px 2px 4px rgba(0, 0, 0, 0.3),
@@ -146,6 +144,6 @@ main {
     }
 
     100% {
-        transform: translateX(-100vw);
+        transform: translateX(-20vw);
     }
 }
