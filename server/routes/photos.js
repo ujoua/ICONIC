@@ -36,6 +36,8 @@ router.route('/:id')
 router.post('/upload', upload.single('photo'), async (req, res, next) => {
   try {
     const file = req.file;
+    const { artist, title, text, tags, earliestDate, camera, materials, dimensons } = req.body;
+
     const form = new FormData();
     form.append('photo', req.file.buffer, {
       filename: req.file.originalname,
@@ -47,15 +49,26 @@ router.post('/upload', upload.single('photo'), async (req, res, next) => {
     });
 
     const imageUrl = response.data.url;
+    const filePath = imageUrl.split('/').pop();
+
+    const parsedTags = tags
+      ? tags.split(',').map(t => t.trim()).filter(Boolean)
+      : [];
+    const parsedMaterials = materials
+      ? materials.split(',').map(m => m.trim()).filter(Boolean)
+      : [];
+    const parsedEarliestDate = earliestDate ? new Date(earliestDate) : undefined;
 
     const newPhoto = new Photo({
-      filePath: imageUrl.split('/').pop(),
-      filename: file.filename,
-      originalName: file.originalname,
-      url: imageUrl,
-      size: file.size,
-      mimetype: file.mimetype,
-      createdAt: new Date()
+      filePath,
+      artist: artist || undefined,
+      title: title || undefined,
+      text: text || undefined,
+      tags: parsedTags.length ? parsedTags : undefined,
+      earliestDate: parsedEarliestDate,
+      camera: camera || undefined,
+      materials: parsedMaterials.length ? parsedMaterials : undefined,
+      dimensons: dimensons || undefined
     });
 
     await newPhoto.save();
