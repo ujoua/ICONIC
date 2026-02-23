@@ -2,7 +2,9 @@ node_modules/
 
 uploads/
 photos/
+xml/
 *.jpg
 *.png
+*xml
 
 .env

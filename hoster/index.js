@@ -1,4 +1,5 @@
 const express = require('express')
+// const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 
@@ -16,6 +17,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// app.use(cors({ origin: 'http://127.0.0.1:3000' }));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://192.168.1.105:3000");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
+
 app.post('/upload', upload.single('photo'), (req, res) => {
   const file = req.file;
   if (!file) {
@@ -32,6 +41,7 @@ app.post('/upload', upload.single('photo'), (req, res) => {
 });
 
 app.use('/photos', express.static(path.join(__dirname, 'photos')));
+app.use('/xml', express.static(path.join(__dirname, 'xml')));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

@@ -25,6 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
         tags.textContent = `${photo.tags}`;
         tags.style.color = 'darkblue';
 
+        if (photo.easterEgg) {
+          article.addEventListener('click', () => {
+            window.location.href = `game.html?filePath=${photo.filePath}`;
+          });
+        }
+
         span.appendChild(h3);
         span.appendChild(figcaption);
         span.appendChild(p);
