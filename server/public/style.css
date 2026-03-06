@@ -13,8 +13,7 @@ body {
     margin: 0;
     padding: 0;
     height: 101vh;
-    background-color: rgb(252, 227, 203);
-
+    /* background-color: rgb(252, 227, 203); */
 }
 
 main {
@@ -23,7 +22,7 @@ main {
     /* max-content는 삼성 인터넷 브라우저에서 튐 */
     height: 90dvh;
 
-    background-color: rgb(255, 255, 230);
+    /* background-color: rgb(255, 255, 230); */
 
     /* min-width: 0; */
     /* contain: layout paint; */
@@ -34,6 +33,9 @@ main {
     /* Firefox */
     -ms-overflow-style: none;
     /* IE/Edge */
+
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
 }
 
 /* Chrome, Safari, Opera */
@@ -42,6 +44,8 @@ main::-webkit-scrollbar {
 }
 
 .gallery {
+    /* border: 5px solid black; */
+
     height: 100%;
     width: max-content;
     min-width: 100%;
@@ -53,7 +57,38 @@ main::-webkit-scrollbar {
     align-content: flex-end;
     justify-content: flex-start;
     align-items: center;
-    gap: 30vw;
+    gap: 36vw;
+
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    /* filter: brightness(0.7); */
+    animation: wallEnter 6.4s ease-out forwards;
+    /* lightOn 3.2s ease-out forwards; */
+
+    box-shadow:
+        -17px -17px 1px rgba(240, 200, 128, 0.9),
+        -16px -16px 1px rgba(240, 200, 0, 0.9),
+        -15px -15px 1px rgba(240, 200, 0, 0.9),
+        -14px -14px 1px rgba(240, 200, 0, 0.9),
+        -13px -13px 1px rgba(240, 200, 0, 0.9),
+        -12px -12px 1px rgba(240, 200, 0, 0.9),
+        -11px -11px 1px rgba(240, 200, 0, 0.9),
+        -10px -10px 1px rgba(240, 200, 0, 0.9),
+        -9px -9px 1px rgba(240, 200, 0, 0.9),
+        -8px -8px 1px rgba(240, 200, 0, 0.9),
+        -6px -6px 1px rgba(240, 200, 0, 0.9),
+        -5px -5px 1px rgba(240, 200, 0, 0.9),
+        -4px -4px 1px rgba(240, 200, 0, 0.9),
+        -3px -3px 1px rgba(240, 200, 0, 0.9),
+        -2px -2px 1px rgba(240, 200, 0, 0.9),
+        -1px -1px 1px rgba(240, 200, 0, 0.9),
+
+        1px 2px 4px rgba(255, 220, 0, 0.3),
+        3px 4px 6px rgba(255, 220, 0, 0.2),
+        0 8px 12px rgba(255, 220, 0, 0.15),
+        0 12px 20px rgba(255, 220, 0, 0.1);
+
+
 }
 
 .gallery-item {
@@ -66,7 +101,7 @@ main::-webkit-scrollbar {
     align-items: flex-end;
     gap: 8vw;
 
-    animation: moveLeft 3s ease-in 1 forwards;
+    /* animation: moveLeft 3s ease-in 1 forwards; */
 }
 
 .gallery:hover .gallery:active .gallery-item {
@@ -74,9 +109,11 @@ main::-webkit-scrollbar {
 }
 
 .gallery-item[alt="주제"] {
+    margin-left: 4vw;
     padding: 4vw;
-    min-width: 32vw;
+    min-width: 40vw;
     min-height: 16vh;
+    max-height: 80vw;
     /* border: 1px solid black; */
     box-shadow:
         1px 2px 4px rgba(0, 0, 0, 0.3),
@@ -86,11 +123,11 @@ main::-webkit-scrollbar {
 }
 
 img {
-    border: 12px solid #f5f5f5;
+    border: 16px solid #f5f5f5;
     max-width: 90vw;
-    max-height: 85dvh;
+    max-height: 80dvh;
     box-shadow:
-        0 0 0 6px rgb(111, 83, 112),
+        0 0 0 8px rgb(56, 48, 52),
         -1px 2px 4px rgba(0, 0, 0, 0.3),
         3px 4px 6px rgba(0, 0, 0, 0.2),
         0 8px 12px rgba(0, 0, 0, 0.15),
@@ -105,13 +142,19 @@ p {
 body {
     background: linear-gradient(270deg, rgb(111, 83, 112), #e8b130);
     background-size: 400% 400%;
-    animation: gradientBG 15s infinite;
+    /* animation: gradientBG 15s infinite; */
 }
 
 main {
+    /* background: linear-gradient(270deg, rgb(155, 215, 203), #fed47b); */
+    background-size: 400% 400%;
+    /* animation: gradientBG 15s infinite; */
+}
+
+.gallery {
     background: linear-gradient(270deg, rgb(155, 215, 203), #fed47b);
     background-size: 400% 400%;
-    animation: gradientBG 15s infinite;
+    /* animation: gradientBG 15s infinite; */
 }
 
 @keyframes gradientBG {
@@ -145,5 +188,47 @@ main {
 
     100% {
         transform: translateX(-20vw);
+    }
+}
+
+/* @keyframes wallEnter {
+
+    0% {
+        transform: rotateY(35deg) translateZ(-200px);
+        opacity: 0;
+    }
+
+    60% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotateY(0deg) translateZ(0);
+    }
+} */
+
+/* 초기 회전 + 시작 위치 조정 */
+@keyframes wallEnter {
+    0% {
+        transform: rotateY(45deg) translateZ(-800px) translateX(65vw);
+        /* 화면 밖으로 이동 */
+        opacity: 0;
+    }
+
+    60% {
+        transform: rotateY(30deg) translateZ(000px) translateX(-10vw);
+        /* 화면 밖으로 이동 */
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotateX(-4deg) rotateY(0deg) translateZ(0) translateX(0);
+        /* 원래 자리 */
+    }
+}
+
+@keyframes lightOn {
+    to {
+        filter: brightness(1);
     }
 }
