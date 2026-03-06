@@ -36,6 +36,9 @@ main {
 
     perspective: 1200px;
     perspective-origin: 50% 50%;
+
+    scroll-snap-type: x mandatory;
+
 }
 
 /* Chrome, Safari, Opera */
@@ -102,6 +105,8 @@ main::-webkit-scrollbar {
     gap: 8vw;
 
     /* animation: moveLeft 3s ease-in 1 forwards; */
+
+    scroll-snap-align: center;
 }
 
 .gallery:hover .gallery:active .gallery-item {
