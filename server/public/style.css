@@ -14,6 +14,20 @@ body {
     padding: 0;
     height: 101vh;
     /* background-color: rgb(252, 227, 203); */
+    background-color: rgb(255, 237, 204);
+}
+
+header {
+    width: 100dvw;
+    height: 56dvh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* bottom: 0;
+    right: 0; */
+    z-index: -1;
+    background-color: rgb(245, 243, 239);
+    /* transform: rotateY(45deg); */
 }
 
 main {
@@ -65,7 +79,7 @@ main::-webkit-scrollbar {
     transform-origin: left center;
     transform-style: preserve-3d;
     /* filter: brightness(0.7); */
-    animation: wallEnter 6.4s ease-out forwards;
+    animation: wallEnter 9.9s ease-out forwards;
     /* lightOn 3.2s ease-out forwards; */
 
     box-shadow:
@@ -84,12 +98,12 @@ main::-webkit-scrollbar {
         -4px -4px 1px rgba(240, 200, 0, 0.9),
         -3px -3px 1px rgba(240, 200, 0, 0.9),
         -2px -2px 1px rgba(240, 200, 0, 0.9),
-        -1px -1px 1px rgba(240, 200, 0, 0.9),
+        -1px -1px 1px rgba(240, 200, 0, 0.9);
 
-        1px 2px 4px rgba(255, 220, 0, 0.3),
+    /* 1px 2px 4px rgba(255, 220, 0, 0.3),
         3px 4px 6px rgba(255, 220, 0, 0.2),
         0 8px 12px rgba(255, 220, 0, 0.15),
-        0 12px 20px rgba(255, 220, 0, 0.1);
+        0 12px 20px rgba(255, 220, 0, 0.1); */
 
 
 }
@@ -145,7 +159,9 @@ p {
 
 
 body {
-    background: linear-gradient(270deg, rgb(111, 83, 112), #e8b130);
+    /* background: linear-gradient(270deg, rgb(111, 83, 112), #e8b130); */
+    /* background-color: rgb(56, 63, 70); */
+    background-color: rgb(237, 230, 218);
     background-size: 400% 400%;
     /* animation: gradientBG 15s infinite; */
 }
@@ -157,7 +173,8 @@ main {
 }
 
 .gallery {
-    background: linear-gradient(270deg, rgb(155, 215, 203), #fed47b);
+    /* background: linear-gradient(270deg, rgb(155, 215, 203), #fed47b); */
+    background-color: floralwhite;
     background-size: 400% 400%;
     /* animation: gradientBG 15s infinite; */
 }
@@ -217,13 +234,19 @@ main {
     0% {
         transform: rotateY(45deg) translateZ(-800px) translateX(65vw);
         /* 화면 밖으로 이동 */
-        opacity: 0;
+        /* opacity: 0; */
+    }
+
+    20% {
+        transform: rotateY(45deg) translateZ(-700px) translateX(65vw);
+        /* 화면 밖으로 이동 */
+        /* opacity: 0; */
     }
 
     60% {
         transform: rotateY(30deg) translateZ(000px) translateX(-10vw);
         /* 화면 밖으로 이동 */
-        opacity: 1;
+        /* opacity: 1; */
     }
 
     100% {
