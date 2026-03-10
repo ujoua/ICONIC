@@ -1,106 +1,116 @@
 * {
-    box-sizing: border-box;
-    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+    /* overscroll-behavior: none; */
 }
 
 a {
-    color: azure;
+    color: darkcyan;
     text-decoration: none;
 }
 
 body {
+    z-index: 5;
     margin: 0;
     padding: 0;
-    height: 100vh;
-    background-color: rgb(237, 230, 218);
-    background-size: 400% 400%;
+    background-color: rgb(240, 230, 220);
+}
+
+button {
+    width: 100dvw;
+    height: 100dvh;
+    background-color: black;
+    color: azure;
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    border: none;
+    font-size: 1.4rem;
+    letter-spacing: 0.4rem;
+    cursor: pointer;
+}
+
+.lighting-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: black;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.lighting-overlay.on {
+    opacity: 1;
+    animation: lightOn 2.3s linear forwards;
+}
+
+.gallery.animate {
+    animation: wallEnter 12.3s ease-out forwards;
 }
 
 header {
-    width: 100dvw;
-    height: 56dvh;
+    z-index: -1;
+    width: 100%;
+    height: 48dvh;
     position: fixed;
     top: 0;
     left: 0;
-    z-index: -1;
-    background-color: rgb(245, 243, 239);
-}
-
-main {
-    width: 100%;
-    height: 90dvh;
-    overflow-y: hidden;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    perspective: 1200px;
-    perspective-origin: 50% 50%;
-    scroll-snap-type: x mandatory;
-    background-size: 400% 400%;
+    background-color: rgb(245, 245, 245);
 }
 
 main::-webkit-scrollbar {
     display: none;
 }
 
+main {
+    /* Firefox */
+    scrollbar-width: none;
+    /* IE/Edge */
+    -ms-overflow-style: none;
+    scroll-snap-type: x proximity;
+    /* 삼성 인터넷 브라우저 max-content 버그 때문에 */
+    overflow-y: hidden;
+
+    width: 100%;
+    max-height: 100vh;
+
+    perspective: 1200px;
+    /* transform-style: preserve-3d; */
+}
+
 .gallery {
-    height: 100%;
+    padding-left: 32vh;
+    padding-right: 32vh;
     width: max-content;
     min-width: 100%;
-    padding-left: 20%;
-    padding-right: 20%;
+    height: 90dvh;
+
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
-    align-content: flex-end;
-    justify-content: flex-start;
     align-items: center;
-    gap: 36vw;
+    gap: 64vh;
+
     background-color: floralwhite;
-    background-size: 400% 400%;
-    transform-origin: left center;
-    transform-style: preserve-3d;
-    animation: wallEnter 9.9s ease-out forwards;
     box-shadow:
-        -17px -17px 1px rgba(230, 221, 205, 0.9),
-        -16px -16px 1px rgba(230, 221, 205, 0.85),
-        -15px -15px 1px rgba(230, 221, 205, 0.8),
-        -14px -14px 1px rgba(230, 221, 205, 0.75),
-        -13px -13px 1px rgba(230, 221, 205, 0.7),
-        -12px -12px 1px rgba(230, 221, 205, 0.65),
-        -11px -11px 1px rgba(230, 221, 205, 0.6),
-        -10px -10px 1px rgba(230, 221, 205, 0.55),
-        -9px -9px 1px rgba(230, 221, 205, 0.5),
-        -8px -8px 1px rgba(230, 221, 205, 0.45),
-        -6px -6px 1px rgba(230, 221, 205, 0.4),
-        -5px -5px 1px rgba(230, 221, 205, 0.35),
-        -4px -4px 1px rgba(230, 221, 205, 0.3),
-        -3px -3px 1px rgba(230, 221, 205, 0.25),
-        -2px -2px 1px rgba(230, 221, 205, 0.2),
-        -1px -1px 1px rgba(230, 221, 205, 0.15);
+        -17px -17px 1px rgba(230, 221, 205, 0.9), -16px -16px 1px rgba(230, 221, 205, 0.85), -15px -15px 1px rgba(230, 221, 205, 0.8), -14px -14px 1px rgba(230, 221, 205, 0.75),
+        -13px -13px 1px rgba(230, 221, 205, 0.7), -12px -12px 1px rgba(230, 221, 205, 0.65), -11px -11px 1px rgba(230, 221, 205, 0.6), -10px -10px 1px rgba(230, 221, 205, 0.55),
+        -9px -9px 1px rgba(230, 221, 205, 0.5), -8px -8px 1px rgba(230, 221, 205, 0.45), -6px -6px 1px rgba(230, 221, 205, 0.4), -5px -5px 1px rgba(230, 221, 205, 0.35),
+        -4px -4px 1px rgba(230, 221, 205, 0.3), -3px -3px 1px rgba(230, 221, 205, 0.25), -2px -2px 1px rgba(230, 221, 205, 0.2), -1px -1px 1px rgba(230, 221, 205, 0.15);
+
+    transform-style: preserve-3d;
+    transform-origin: center left;
+    /* animation: wallEnter 12.3s ease-out forwards; */
 }
 
-.gallery:hover .gallery:active .gallery-item {
-    animation-play-state: paused;
-}
-
-.gallery-item {
-    position: relative;
-    flex: 0 0 auto;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 8vw;
+.gallery * {
     scroll-snap-align: center;
 }
 
-.gallery-item[alt="주제"] {
-    margin-left: 4vw;
-    padding: 4vw;
-    min-width: 40vw;
-    min-height: 16vh;
-    max-height: 80vw;
+.gallery article[alt="주제"] {
+    padding: 8vh;
+    width: 75vh;
+    max-width: 90dvw;
+    max-height: 90dvh;
     box-shadow:
         1px 2px 4px rgba(0, 0, 0, 0.3),
         3px 4px 6px rgba(0, 0, 0, 0.2),
@@ -108,10 +118,24 @@ main::-webkit-scrollbar {
         0 12px 20px rgba(0, 0, 0, 0.1);
 }
 
-img {
+.gallery-item {
+    padding-bottom: 4vh;
+    height: 90%;
+    max-width: 90dvw;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4vh 8vh;
+}
+
+.gallery-item>img {
+    max-width: 100%;
+    max-height: 100%;
+    flex: 0 1 0;
+
     border: 16px solid #f5f5f5;
-    max-width: 90vw;
-    max-height: 80dvh;
     box-shadow:
         0 0 0 8px rgb(56, 48, 52),
         0px 15px 5px rgba(0, 0, 0, 0.3),
@@ -120,8 +144,32 @@ img {
         16px 12px 8px rgba(0, 0, 0, 0.15);
 }
 
-p {
-    max-width: 94%;
+@keyframes lightOn {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes wallEnter {
+    0% {
+        transform: rotateY(45deg) translateZ(-160vh) translateX(80vh);
+    }
+
+    20% {
+        transform: rotateY(45deg) translateZ(-150vh) translateX(80vh);
+    }
+
+    75% {
+        transform: rotateY(30deg) translateZ(0) translateX(-10vh);
+    }
+
+    100% {
+        transform: rotateX(-4deg) rotateY(0deg) translateZ(0) translateX(0);
+    }
 }
 
 @keyframes gradientBG {
@@ -135,39 +183,5 @@ p {
 
     100% {
         background-position: 0% 50%;
-    }
-}
-
-@keyframes moveLeft {
-    0% {
-        transform: translateX(0);
-    }
-
-    100% {
-        transform: translateX(-20vw);
-    }
-}
-
-@keyframes wallEnter {
-    0% {
-        transform: rotateY(45deg) translateZ(-800px) translateX(65vw);
-    }
-
-    20% {
-        transform: rotateY(45deg) translateZ(-700px) translateX(65vw);
-    }
-
-    60% {
-        transform: rotateY(30deg) translateZ(0) translateX(-10vw);
-    }
-
-    100% {
-        transform: rotateX(-4deg) rotateY(0deg) translateZ(0) translateX(0);
-    }
-}
-
-@keyframes lightOn {
-    to {
-        filter: brightness(1);
     }
 }

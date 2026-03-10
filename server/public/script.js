@@ -1,3 +1,26 @@
+const button = document.getElementsByTagName('button')[0];
+const lightingOverlay = document.querySelector('.lighting-overlay');
+const gallery = document.getElementsByClassName('gallery')[0];
+
+button.addEventListener('click', () => {
+  document.documentElement.requestFullscreen();
+
+  button.style.display = 'none';
+  lightingOverlay.classList.add('on');
+  gallery.classList.add('animate');
+
+  // if (lightingOverlay) {
+  //   lightingOverlay.classList.add('on');
+  //   lightingOverlay.addEventListener(
+  //     'animationend',
+  //     () => {
+  //       lightingOverlay.classList.remove('on');
+  //     },
+  //     { once: true }
+  //   );
+  // }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   fetch('/hypes')
     .then(res => res.json())
