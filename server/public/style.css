@@ -13,6 +13,7 @@ body {
     z-index: 5;
     margin: 0;
     padding: 0;
+    height: 101dvh;
     background-color: rgb(240, 230, 220);
 }
 
@@ -95,14 +96,18 @@ main {
         -17px -17px 1px rgba(230, 221, 205, 0.9), -16px -16px 1px rgba(230, 221, 205, 0.85), -15px -15px 1px rgba(230, 221, 205, 0.8), -14px -14px 1px rgba(230, 221, 205, 0.75),
         -13px -13px 1px rgba(230, 221, 205, 0.7), -12px -12px 1px rgba(230, 221, 205, 0.65), -11px -11px 1px rgba(230, 221, 205, 0.6), -10px -10px 1px rgba(230, 221, 205, 0.55),
         -9px -9px 1px rgba(230, 221, 205, 0.5), -8px -8px 1px rgba(230, 221, 205, 0.45), -6px -6px 1px rgba(230, 221, 205, 0.4), -5px -5px 1px rgba(230, 221, 205, 0.35),
-        -4px -4px 1px rgba(230, 221, 205, 0.3), -3px -3px 1px rgba(230, 221, 205, 0.25), -2px -2px 1px rgba(230, 221, 205, 0.2), -1px -1px 1px rgba(230, 221, 205, 0.15);
+        -4px -4px 1px rgba(230, 221, 205, 0.3), -3px -3px 1px rgba(230, 221, 205, 0.25), -2px -2px 1px rgba(230, 221, 205, 0.2), -1px -1px 1px rgba(230, 221, 205, 0.15),
+
+        -18px -15px 5px rgba(230, 220, 205, 0.6),
+        -2px -0px 6px rgba(230, 220, 205, 0.8),
+        0px 4px 8px rgba(200, 200, 180, 0.3);
 
     transform-style: preserve-3d;
     transform-origin: center left;
     /* animation: wallEnter 12.3s ease-out forwards; */
 }
 
-.gallery * {
+.gallery article {
     scroll-snap-align: center;
 }
 
@@ -144,6 +149,10 @@ main {
         16px 12px 8px rgba(0, 0, 0, 0.15);
 }
 
+.gallery-item>span {
+    flex: 0 1 0;
+}
+
 @keyframes lightOn {
     from {
         opacity: 1;
@@ -169,19 +178,5 @@ main {
 
     100% {
         transform: rotateX(-4deg) rotateY(0deg) translateZ(0) translateX(0);
-    }
-}
-
-@keyframes gradientBG {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
     }
 }

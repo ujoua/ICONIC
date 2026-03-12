@@ -1,25 +1,46 @@
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'auto'; // 기본값: 뒤로가기 시 자동 복원
+  // history.scrollRestoration = 'manual'; // 수동 제어
+}
+
 const button = document.getElementsByTagName('button')[0];
 const lightingOverlay = document.querySelector('.lighting-overlay');
+const main = document.getElementsByTagName('main')[0];
 const gallery = document.getElementsByClassName('gallery')[0];
 
-button.addEventListener('click', () => {
-  document.documentElement.requestFullscreen();
+// // 페이지 떠날 때 저장
+// window.addEventListener('beforeunload', () => {
+//   sessionStorage.setItem('scrollPosition', main.scrollLeft);
+// });
 
+// // 페이지 돌아올 때 복원
+// window.addEventListener('pageshow', () => {
+//   const pos = sessionStorage.getItem('scrollPosition');
+//   if (pos) {
+//     setTimeout(() => {
+//       main.scrollTo(parseInt(pos, 10), 0);
+//     }, 1000);
+//   }
+// });
+
+// 이미 시작한 적이 있으면 버튼 숨기기
+if (sessionStorage.getItem('started')) {
   button.style.display = 'none';
-  lightingOverlay.classList.add('on');
-  gallery.classList.add('animate');
+  lightingOverlay.style.display = 'none';
+}
+else {
+  button.style.display = 'block';
+  lightingOverlay.style.display = 'block';
 
-  // if (lightingOverlay) {
-  //   lightingOverlay.classList.add('on');
-  //   lightingOverlay.addEventListener(
-  //     'animationend',
-  //     () => {
-  //       lightingOverlay.classList.remove('on');
-  //     },
-  //     { once: true }
-  //   );
-  // }
-});
+  button.addEventListener('click', () => {
+    // document.documentElement.requestFullscreen();
+    sessionStorage.setItem('started', 'true');
+  
+    button.style.display = 'none';
+    lightingOverlay.classList.add('on');
+    gallery.classList.add('animate');
+  });
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   fetch('/hypes')
