@@ -25,49 +25,6 @@ button:hover {
     background-color: #ff3838;
 }
 
-
-#levelContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 16px;
-    margin: 20px auto;
-    max-width: 360px;
-}
-
-.levelBtn {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: #ddd;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.4rem;
-    font-weight: bold;
-    cursor: pointer;
-    border: 3px solid #999;
-    transition: 0.25s;
-}
-
-.levelBtn.unlocked {
-    background: #ff7f50;
-    color: white;
-    border-color: #ff5a36;
-}
-
-.levelBtn.unlocked:hover {
-    transform: scale(1.1);
-}
-
-.levelBtn.locked {
-    background: #bbb;
-    cursor: not-allowed;
-    color: #666;
-    border-color: #aaa;
-}
-
-
 #timer {
     font-size: 1.4rem;
     color: #333;
@@ -97,7 +54,6 @@ button:hover {
     }
 }
 
-
 .svg-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -119,7 +75,6 @@ svg {
     }
 }
 
-
 .toast {
     position: fixed;
     bottom: 30px;
@@ -138,3 +93,4 @@ svg {
 .toast.show {
     opacity: 1;
 }
+

@@ -31,24 +31,6 @@ button {
     cursor: pointer;
 }
 
-.lighting-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: black;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 10;
-}
-
-.lighting-overlay.on {
-    opacity: 1;
-    animation: lightOn 2.3s linear forwards;
-}
-
-.gallery.animate {
-    animation: wallEnter 12.3s ease-out forwards;
-}
-
 header {
     z-index: -1;
     width: 100%;
@@ -153,13 +135,14 @@ main {
     flex: 0 1 0;
 }
 
-@keyframes lightOn {
+@keyframes fadeOut {
     from {
         opacity: 1;
     }
 
     to {
         opacity: 0;
+        display: none;
     }
 }
 
