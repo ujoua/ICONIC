@@ -10,6 +10,7 @@ router.get('/hypes', async (req, res, next) => {
     // const hypes = await Hype.find();
     // const photos = hypes.map(hype => Photo.findById(hype.pid));
     const photos = await Hype.find().populate('pid');
+    console.log(photos);
     res.json(photos);
   } catch (err) {
     console.error(err);

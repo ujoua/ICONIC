@@ -12,6 +12,6 @@ const photoSchema = new Schema({
     camera: String,
     materials: [String],
     dimensons: String
-});
+}, {collection: "photos"});
 
 module.exports = mongoose.model('Photo', photoSchema);
