@@ -12,7 +12,7 @@ const renderGallery = (filteredPhotos) => {
   galleryEl.innerHTML = "";
   filteredPhotos.forEach((photo, index) => {
     const img = document.createElement("img");
-    img.src = `../static/img/${photo.filePath}`;
+    img.src = `static/img/${photo.filePath}`;
     img.alt = `Photo ${index + 1}`;
     galleryEl.appendChild(img);
   });

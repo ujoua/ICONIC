@@ -41,9 +41,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const rightImage = rightSvg.querySelector("image");
 
     // 왼쪽/오른쪽 이미지는 static/img에서 가져온다.
-    leftImage.setAttribute("xlink:href", `../static/img/${filePath}`);
+    leftImage.setAttribute("xlink:href", `static/img/${filePath}`);
     const rightFile = filePath.replace(/-L(\.[^.]+)$/, "-R$1");
-    rightImage.setAttribute("xlink:href", `../static/img/${rightFile}`);
+    rightImage.setAttribute("xlink:href", `static/img/${rightFile}`);
 
     const leftShapeGroup = leftSvg.querySelector(".shapeGroup");
     const rightShapeGroup = rightSvg.querySelector(".shapeGroup");
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const baseForXml = filePath.includes("-L.")
       ? filePath.replace(/-L\.[^.]+$/, "")
       : filePath.replace(/\.[^.]+$/, "");
-    const xmlPath = `../static/xml/${baseForXml}.xml`;
+    const xmlPath = `static/xml/${baseForXml}.xml`;
 
     fetch(xmlPath)
       .then((res) => res.text())

@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const img = document.createElement("img");
-    img.src = `../static/img/${photo.filePath}`;
+    img.src = `static/img/${photo.filePath}`;
     img.alt = `Photo ${index + 1}`;
 
     const span = document.createElement("span");
