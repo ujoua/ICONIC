@@ -4,6 +4,7 @@ const mongoUri = process.env.MONGO_URI;
 
 const connect = () => {
   mongoose.connect(mongoUri, {
+    dbName: "iconic",
   }).then(async () => {
     console.log("몽고디비 연결 성공");
   }).catch((err) => {
