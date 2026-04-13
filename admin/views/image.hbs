@@ -14,7 +14,7 @@
           <h1 class="title">{{image.title}}</h1>
           <p class="subtitle">{{image.artist}} · {{image.earliestDate}}</p>
         </div>
-        <div class="badge">파일명: {{image.filePath}}</div>
+        <div class="badge">파일명: {{image.filePath}} {{#if image.isHype}}· HYPE{{/if}}</div>
       </header>
 
       <section class="hero">
@@ -80,8 +80,12 @@
 
             <div class="actions">
               <button class="btn btn-primary" type="submit">수정 저장</button>
+              <button class="btn btn-soft" id="hypeBtn" type="button">
+                {{#if image.isHype}}하이프 해제{{else}}하이프로 선정{{/if}}
+              </button>
               <button class="btn btn-danger" id="deleteBtn" type="button">삭제</button>
             </div>
+            <p id="statusMsg" class="status-msg"></p>
           </form>
         </article>
       </section>
@@ -91,7 +95,10 @@
       (function () {
         const form = document.getElementById('editForm');
         const deleteBtn = document.getElementById('deleteBtn');
+        const hypeBtn = document.getElementById('hypeBtn');
+        const statusMsg = document.getElementById('statusMsg');
         const filePath = '{{image.filePath}}';
+        let isHype = {{#if image.isHype}}true{{else}}false{{/if}};
 
         form.addEventListener('submit', async function (e) {
           e.preventDefault();
@@ -158,6 +165,42 @@
           } catch (err) {
             console.error(err);
             alert('요청 중 오류가 발생했습니다.');
+          }
+        });
+
+        hypeBtn.addEventListener('click', async function () {
+          const nextIsHype = !isHype;
+          hypeBtn.disabled = true;
+          statusMsg.textContent = '하이프 상태를 저장하는 중...';
+
+          try {
+            const body = new URLSearchParams();
+            body.set('isHype', String(nextIsHype));
+
+            const res = await fetch('/images/' + encodeURIComponent(filePath) + '/hype', {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+              },
+              body: body.toString(),
+            });
+
+            if (!res.ok) {
+              const text = await res.text();
+              statusMsg.textContent = '저장 실패: ' + text;
+              return;
+            }
+
+            isHype = nextIsHype;
+            hypeBtn.textContent = isHype ? '하이프 해제' : '하이프로 선정';
+            statusMsg.textContent = isHype
+              ? '하이프에 선정되었습니다.'
+              : '하이프에서 제외되었습니다.';
+          } catch (err) {
+            console.error(err);
+            statusMsg.textContent = '요청 중 오류가 발생했습니다.';
+          } finally {
+            hypeBtn.disabled = false;
           }
         });
       })();

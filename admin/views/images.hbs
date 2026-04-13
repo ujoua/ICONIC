@@ -13,7 +13,7 @@
           <h1 class="title">사진 메타데이터 대시보드</h1>
           <p class="subtitle">등록, 검색, 분류를 한 화면에서 빠르게 처리합니다.</p>
         </div>
-        <div class="badge">총 {{images.length}}개 사진</div>
+        <div class="badge">총 <span id="totalCount">{{images.length}}</span>개 · 하이프 <span id="hypeCount">{{hypeCount}}</span>개</div>
       </header>
 
       <section class="grid">
@@ -81,22 +81,34 @@
           <div class="toolbar">
             <input id="searchInput" type="search" placeholder="제목, 작가, 설명, 태그 검색" />
             <input id="tagInput" type="text" placeholder="태그 필터(예: portrait)" />
+            <button id="hypeOnlyBtn" class="btn btn-soft" type="button">하이프만 보기: OFF</button>
           </div>
+          <p id="statusMsg" class="status-msg"></p>
           <ul id="imageList" class="list">
             {{#each images}}
-              <li class="card" data-search="{{this.title}} {{this.artist}} {{this.text}} {{this.tags}}" data-tags="{{this.tags}}">
+              <li class="card" data-search="{{this.title}} {{this.artist}} {{this.text}} {{this.tags}}" data-tags="{{this.tags}}" data-file-path="{{this.filePath}}" data-is-hype="{{this.isHype}}">
                 <a href="/images/{{this.filePath}}">
                   <img class="thumb" src="/img/{{this.filePath}}" alt="{{this.title}}" />
                 </a>
                 <div>
-                  <a href="/images/{{this.filePath}}">
-                    <h3 class="meta-title">{{this.title}}</h3>
-                  </a>
+                  <div class="meta-head">
+                    <a href="/images/{{this.filePath}}">
+                      <h3 class="meta-title">{{this.title}}</h3>
+                    </a>
+                    {{#if this.isHype}}
+                      <span class="chip chip-hype">HYPE</span>
+                    {{/if}}
+                  </div>
                   <p class="meta-desc">{{this.artist}} · {{this.earliestDate}}</p>
                   <p class="meta-desc">{{this.text}}</p>
                   <div class="chips">
                     <span class="chip">camera: {{this.camera}}</span>
                     <span class="chip">size: {{this.dimensons}}</span>
+                  </div>
+                  <div class="card-actions">
+                    <button class="toggle-btn {{#if this.isHype}}active{{/if}}" type="button">
+                      {{#if this.isHype}}하이프 해제{{else}}하이프로 선정{{/if}}
+                    </button>
                   </div>
                 </div>
               </li>
@@ -113,7 +125,11 @@
         const tagInput = document.getElementById('tagInput');
         const list = document.getElementById('imageList');
         const emptyState = document.getElementById('emptyState');
+        const statusMsg = document.getElementById('statusMsg');
+        const hypeOnlyBtn = document.getElementById('hypeOnlyBtn');
+        const hypeCountEl = document.getElementById('hypeCount');
         const cards = Array.from(list.querySelectorAll('.card'));
+        let hypeOnly = false;
 
         function normalize(value) {
           return String(value || '').toLowerCase();
@@ -127,7 +143,11 @@
           cards.forEach((card) => {
             const text = normalize(card.dataset.search);
             const tags = normalize(card.dataset.tags);
-            const visible = text.includes(keyword) && (!tagKeyword || tags.includes(tagKeyword));
+            const isHype = card.dataset.isHype === 'true';
+            const visible =
+              text.includes(keyword) &&
+              (!tagKeyword || tags.includes(tagKeyword)) &&
+              (!hypeOnly || isHype);
             card.style.display = visible ? 'grid' : 'none';
             if (visible) visibleCount += 1;
           });
@@ -135,8 +155,80 @@
           emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
         }
 
+        function refreshHypeCount() {
+          const count = cards.filter((card) => card.dataset.isHype === 'true').length;
+          hypeCountEl.textContent = String(count);
+        }
+
         searchInput.addEventListener('input', applyFilter);
         tagInput.addEventListener('input', applyFilter);
+
+        hypeOnlyBtn.addEventListener('click', function () {
+          hypeOnly = !hypeOnly;
+          hypeOnlyBtn.textContent = '하이프만 보기: ' + (hypeOnly ? 'ON' : 'OFF');
+          applyFilter();
+        });
+
+        list.addEventListener('click', async function (event) {
+          const button = event.target.closest('.toggle-btn');
+          if (!button) return;
+
+          const card = button.closest('.card');
+          if (!card) return;
+
+          const filePath = card.dataset.filePath;
+          const currentIsHype = card.dataset.isHype === 'true';
+          const nextIsHype = !currentIsHype;
+
+          button.disabled = true;
+          statusMsg.textContent = '하이프 상태를 저장하는 중...';
+
+          try {
+            const body = new URLSearchParams();
+            body.set('isHype', String(nextIsHype));
+
+            const res = await fetch('/images/' + encodeURIComponent(filePath) + '/hype', {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+              },
+              body: body.toString(),
+            });
+
+            if (!res.ok) {
+              const text = await res.text();
+              statusMsg.textContent = '저장 실패: ' + text;
+              return;
+            }
+
+            card.dataset.isHype = String(nextIsHype);
+            button.classList.toggle('active', nextIsHype);
+            button.textContent = nextIsHype ? '하이프 해제' : '하이프로 선정';
+
+            const oldChip = card.querySelector('.chip-hype');
+            if (nextIsHype && !oldChip) {
+              const head = card.querySelector('.meta-head');
+              const chip = document.createElement('span');
+              chip.className = 'chip chip-hype';
+              chip.textContent = 'HYPE';
+              head.appendChild(chip);
+            }
+            if (!nextIsHype && oldChip) {
+              oldChip.remove();
+            }
+
+            statusMsg.textContent = nextIsHype
+              ? '하이프에 선정되었습니다.'
+              : '하이프에서 제외되었습니다.';
+            refreshHypeCount();
+            applyFilter();
+          } catch (error) {
+            console.error(error);
+            statusMsg.textContent = '요청 중 오류가 발생했습니다.';
+          } finally {
+            button.disabled = false;
+          }
+        });
       })();
     </script>
   </body>

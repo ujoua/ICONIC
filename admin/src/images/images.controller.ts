@@ -41,6 +41,19 @@ export class ImagesController {
     return this.imagesService.update(filePath, updateImageDto);
   }
 
+  @Patch(':filePath/hype')
+  updateHype(
+    @Param('filePath') filePath: string,
+    @Body('isHype') isHypeRaw: boolean | string,
+  ) {
+    const isHype =
+      typeof isHypeRaw === 'boolean'
+        ? isHypeRaw
+        : String(isHypeRaw).toLowerCase() === 'true';
+
+    return this.imagesService.setHype(filePath, isHype);
+  }
+
   @Delete(':filePath')
   remove(@Param('filePath') filePath: string) {
     return this.imagesService.remove(filePath);

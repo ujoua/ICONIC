@@ -9,9 +9,12 @@ import { diskStorage } from 'multer';
 export class ImagesService {
   private data: any[] = [];
   private readonly dataPath = path.join(__dirname, '..', '..', '../', 'photos-data.json');
+  private readonly hypePath = path.join(__dirname, '..', '..', '../', 'hype.json');
+  private hypeFiles: string[] = [];
 
   constructor() {
     this.loadData();
+    this.loadHypeData();
   }
 
   private loadData() {
@@ -21,6 +24,23 @@ export class ImagesService {
 
   private saveData(data: any) {
     fs.writeFileSync(this.dataPath, JSON.stringify(data, null, 2));
+  }
+
+  private loadHypeData() {
+    if (!fs.existsSync(this.hypePath)) {
+      this.hypeFiles = [];
+      return;
+    }
+
+    const raw = fs.readFileSync(this.hypePath, 'utf-8');
+    const parsed = JSON.parse(raw);
+    this.hypeFiles = Array.isArray(parsed)
+      ? parsed.filter((item) => typeof item === 'string')
+      : [];
+  }
+
+  private saveHypeData() {
+    fs.writeFileSync(this.hypePath, JSON.stringify(this.hypeFiles, null, 2));
   }
 
   private normalizeArrayField(
@@ -60,12 +80,23 @@ export class ImagesService {
   }
 
   findAll() {
-    return { images: this.data };
+    const hypeSet = new Set(this.hypeFiles);
+    const images = this.data.map((image) => ({
+      ...image,
+      isHype: hypeSet.has(image.filePath),
+    }));
+
+    return {
+      images,
+      hypeCount: this.hypeFiles.length,
+    };
   }
 
   findOne(filePath: string) {
     const image = this.data.find(p => p.filePath === filePath);
-    return { image: image };
+    return {
+      image: image ? { ...image, isHype: this.hypeFiles.includes(image.filePath) } : image,
+    };
   }
 
   update(filePath: string, updateImageDto: UpdateImageDto) {
@@ -121,6 +152,34 @@ export class ImagesService {
       fs.unlinkSync(imageAbsolutePath);
     }
 
+    if (this.hypeFiles.includes(filePath)) {
+      this.hypeFiles = this.hypeFiles.filter((item) => item !== filePath);
+      this.saveHypeData();
+    }
+
     return { image: removed, deleted: true };
+  }
+
+  setHype(filePath: string, isHype: boolean) {
+    const image = this.data.find((p) => p.filePath === filePath);
+    if (!image) {
+      throw new BadRequestException('해당 이미지를 찾을 수 없습니다.');
+    }
+
+    const hypeSet = new Set(this.hypeFiles);
+    if (isHype) {
+      hypeSet.add(filePath);
+    } else {
+      hypeSet.delete(filePath);
+    }
+
+    this.hypeFiles = Array.from(hypeSet);
+    this.saveHypeData();
+
+    return {
+      filePath,
+      isHype: hypeSet.has(filePath),
+      hypeCount: hypeSet.size,
+    };
   }
 }
