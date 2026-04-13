@@ -2,70 +2,142 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>App</title>
-    <style>
-      img {
-        width: 100px;
-      }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Photo Metadata Admin</title>
+    <link rel="stylesheet" href="/admin-dashboard.css" />
   </head>
   <body>
-    <form action="/images/" method="post" enctype="multipart/form-data">
-      <div>
-        <label for="filePath">이미지 파일 업로드:</label>
-        <input type="file" id="filePath" name="filePath" accept="image/*" required />
-      </div>
+    <main class="admin-wrap">
+      <header class="topbar">
+        <div>
+          <h1 class="title">사진 메타데이터 대시보드</h1>
+          <p class="subtitle">등록, 검색, 분류를 한 화면에서 빠르게 처리합니다.</p>
+        </div>
+        <div class="badge">총 {{images.length}}개 사진</div>
+      </header>
 
-      <div>
-        <label for="artist">작가:</label>
-        <input type="text" id="artist" name="artist" required />
-      </div>
+      <section class="grid">
+        <article class="panel panel-pad">
+          <h2 class="panel-title">새 사진 등록</h2>
+          <form class="form-grid" action="/images/" method="post" enctype="multipart/form-data">
+            <div class="field">
+              <label for="filePath">이미지 파일</label>
+              <input type="file" id="filePath" name="filePath" accept="image/*" required />
+            </div>
 
-      <div>
-        <label for="title">제목:</label>
-        <input type="text" id="title" name="title" required />
-      </div>
+            <div class="field">
+              <label for="artist">작가</label>
+              <input type="text" id="artist" name="artist" required />
+            </div>
 
-      <div>
-        <label for="text">설명:</label>
-        <input type="text" id="text" name="text" />
-      </div>
+            <div class="field">
+              <label for="title">제목</label>
+              <input type="text" id="title" name="title" required />
+            </div>
 
-      <div>
-        <label for="tags">태그 (쉼표로 구분):</label>
-        <input type="text" id="tags" name="tags" placeholder="예: landscape,snow" />
-      </div>
+            <div class="field">
+              <label for="text">설명</label>
+              <textarea id="text" name="text" placeholder="이 사진의 간단한 설명"></textarea>
+            </div>
 
-      <div>
-        <label for="earliestDate">촬영일(earliestDate):</label>
-        <input type="date" id="earliestDate" name="earliestDate" />
-      </div>
+            <div class="field">
+              <label for="tags">태그 (쉼표 구분)</label>
+              <input type="text" id="tags" name="tags" placeholder="예: portrait,night,urban" />
+            </div>
 
-      <div>
-        <label for="camera">카메라:</label>
-        <input type="text" id="camera" name="camera" />
-      </div>
+            <div class="field">
+              <label for="earliestDate">촬영일</label>
+              <input type="date" id="earliestDate" name="earliestDate" />
+            </div>
 
-      <div>
-        <label for="materials">재료/세부정보 (쉼표로 구분):</label>
-        <input type="text" id="materials" name="materials" placeholder="예: 54mm,F4.3,1/100s,ISO400,0.0ev" />
-      </div>
+            <div class="field">
+              <label for="camera">카메라</label>
+              <input type="text" id="camera" name="camera" placeholder="예: Canon EOS R6" />
+            </div>
 
-      <div>
-        <label for="dimensons">크기 (dimensons):</label>
-        <input type="text" id="dimensons" name="dimensons" placeholder="예: 1280 x 1920" />
-      </div>
+            <div class="field">
+              <label for="materials">세부 정보 (쉼표 구분)</label>
+              <input
+                type="text"
+                id="materials"
+                name="materials"
+                placeholder="예: 54mm,F4.3,1/100s,ISO400,0.0ev"
+              />
+            </div>
 
-      <button type="submit">등록</button>
-    </form>
+            <div class="field">
+              <label for="dimensons">크기</label>
+              <input type="text" id="dimensons" name="dimensons" placeholder="예: 1280 x 1920" />
+            </div>
 
-    <ul>
-      {{#each images}}
-        <a href="/images/{{this.filePath}}">
-          <li>{{this.title}} - {{this.text}}</li>
-          <img src="img/{{this.filePath}}"></img>
-        </a>
-      {{/each}}
-    </ul>
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">등록하기</button>
+            </div>
+          </form>
+        </article>
+
+        <article class="panel panel-pad">
+          <h2 class="panel-title">콘텐츠 목록</h2>
+          <div class="toolbar">
+            <input id="searchInput" type="search" placeholder="제목, 작가, 설명, 태그 검색" />
+            <input id="tagInput" type="text" placeholder="태그 필터(예: portrait)" />
+          </div>
+          <ul id="imageList" class="list">
+            {{#each images}}
+              <li class="card" data-search="{{this.title}} {{this.artist}} {{this.text}} {{this.tags}}" data-tags="{{this.tags}}">
+                <a href="/images/{{this.filePath}}">
+                  <img class="thumb" src="/img/{{this.filePath}}" alt="{{this.title}}" />
+                </a>
+                <div>
+                  <a href="/images/{{this.filePath}}">
+                    <h3 class="meta-title">{{this.title}}</h3>
+                  </a>
+                  <p class="meta-desc">{{this.artist}} · {{this.earliestDate}}</p>
+                  <p class="meta-desc">{{this.text}}</p>
+                  <div class="chips">
+                    <span class="chip">camera: {{this.camera}}</span>
+                    <span class="chip">size: {{this.dimensons}}</span>
+                  </div>
+                </div>
+              </li>
+            {{/each}}
+          </ul>
+          <p id="emptyState" class="empty" style="display: none;">조건에 맞는 항목이 없습니다.</p>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        const searchInput = document.getElementById('searchInput');
+        const tagInput = document.getElementById('tagInput');
+        const list = document.getElementById('imageList');
+        const emptyState = document.getElementById('emptyState');
+        const cards = Array.from(list.querySelectorAll('.card'));
+
+        function normalize(value) {
+          return String(value || '').toLowerCase();
+        }
+
+        function applyFilter() {
+          const keyword = normalize(searchInput.value);
+          const tagKeyword = normalize(tagInput.value).trim();
+          let visibleCount = 0;
+
+          cards.forEach((card) => {
+            const text = normalize(card.dataset.search);
+            const tags = normalize(card.dataset.tags);
+            const visible = text.includes(keyword) && (!tagKeyword || tags.includes(tagKeyword));
+            card.style.display = visible ? 'grid' : 'none';
+            if (visible) visibleCount += 1;
+          });
+
+          emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        searchInput.addEventListener('input', applyFilter);
+        tagInput.addEventListener('input', applyFilter);
+      })();
+    </script>
   </body>
 </html>

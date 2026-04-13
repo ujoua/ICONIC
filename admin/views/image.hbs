@@ -2,95 +2,90 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>App</title>
-    <style>
-      img {
-        width: 400px;
-      }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{image.title}} | Photo Metadata Admin</title>
+    <link rel="stylesheet" href="/admin-dashboard.css" />
   </head>
   <body>
-    <h1>이미지 상세</h1>
-    <p><strong>{{image.title}}</strong> - {{image.text}}</p>
-    <img src="../img/{{image.filePath}}"></img>
+    <main class="admin-wrap">
+      <a class="back-link" href="/images">← 목록으로 돌아가기</a>
+      <header class="topbar">
+        <div>
+          <h1 class="title">{{image.title}}</h1>
+          <p class="subtitle">{{image.artist}} · {{image.earliestDate}}</p>
+        </div>
+        <div class="badge">파일명: {{image.filePath}}</div>
+      </header>
 
-    <hr />
+      <section class="hero">
+        <article class="panel panel-pad">
+          <img class="detail-image" src="/img/{{image.filePath}}" alt="{{image.title}}" />
+          <ul class="detail-list">
+            <li><strong>설명</strong><span>{{image.text}}</span></li>
+            <li><strong>태그</strong><span>{{image.tags}}</span></li>
+            <li><strong>카메라</strong><span>{{image.camera}}</span></li>
+            <li><strong>재료</strong><span>{{image.materials}}</span></li>
+            <li><strong>크기</strong><span>{{image.dimensons}}</span></li>
+          </ul>
+        </article>
 
-    <h2>정보 수정</h2>
-    <form id="editForm">
-      <div>
-        <label for="artist">작가:</label>
-        <input type="text" id="artist" name="artist" value="{{image.artist}}" />
-      </div>
+        <article class="panel panel-pad">
+          <h2 class="panel-title">메타데이터 수정</h2>
+          <form id="editForm" class="form-grid">
+            <div class="field">
+              <label for="artist">작가</label>
+              <input type="text" id="artist" name="artist" value="{{image.artist}}" />
+            </div>
 
-      <div>
-        <label for="title">제목:</label>
-        <input type="text" id="title" name="title" value="{{image.title}}" />
-      </div>
+            <div class="field">
+              <label for="title">제목</label>
+              <input type="text" id="title" name="title" value="{{image.title}}" />
+            </div>
 
-      <div>
-        <label for="text">설명:</label>
-        <input type="text" id="text" name="text" value="{{image.text}}" />
-      </div>
+            <div class="field">
+              <label for="text">설명</label>
+              <textarea id="text" name="text">{{image.text}}</textarea>
+            </div>
 
-      <div>
-        <label for="tags">태그 (쉼표로 구분):</label>
-        <input
-          type="text"
-          id="tags"
-          name="tags"
-          value="{{image.tags}}"
-          placeholder="예: landscape,snow"
-        />
-      </div>
+            <div class="field">
+              <label for="tags">태그 (쉼표 구분)</label>
+              <input type="text" id="tags" name="tags" value="{{image.tags}}" placeholder="예: landscape,snow" />
+            </div>
 
-      <div>
-        <label for="earliestDate">촬영일(earliestDate):</label>
-        <input
-          type="date"
-          id="earliestDate"
-          name="earliestDate"
-          value="{{image.earliestDate}}"
-        />
-      </div>
+            <div class="field">
+              <label for="earliestDate">촬영일</label>
+              <input type="date" id="earliestDate" name="earliestDate" value="{{image.earliestDate}}" />
+            </div>
 
-      <div>
-        <label for="camera">카메라:</label>
-        <input
-          type="text"
-          id="camera"
-          name="camera"
-          value="{{image.camera}}"
-        />
-      </div>
+            <div class="field">
+              <label for="camera">카메라</label>
+              <input type="text" id="camera" name="camera" value="{{image.camera}}" />
+            </div>
 
-      <div>
-        <label for="materials">재료/세부정보 (쉼표로 구분):</label>
-        <input
-          type="text"
-          id="materials"
-          name="materials"
-          value="{{image.materials}}"
-          placeholder="예: 54mm,F4.3,1/100s,ISO400,0.0ev"
-        />
-      </div>
+            <div class="field">
+              <label for="materials">재료/세부정보 (쉼표 구분)</label>
+              <input
+                type="text"
+                id="materials"
+                name="materials"
+                value="{{image.materials}}"
+                placeholder="예: 54mm,F4.3,1/100s,ISO400,0.0ev"
+              />
+            </div>
 
-      <div>
-        <label for="dimensons">크기 (dimensons):</label>
-        <input
-          type="text"
-          id="dimensons"
-          name="dimensons"
-          value="{{image.dimensons}}"
-          placeholder="예: 1280 x 1920"
-        />
-      </div>
+            <div class="field">
+              <label for="dimensons">크기</label>
+              <input type="text" id="dimensons" name="dimensons" value="{{image.dimensons}}" placeholder="예: 1280 x 1920" />
+            </div>
 
-      <button type="submit">수정 저장</button>
-    </form>
-
-    <hr />
-    <button id="deleteBtn" type="button">삭제</button>
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">수정 저장</button>
+              <button class="btn btn-danger" id="deleteBtn" type="button">삭제</button>
+            </div>
+          </form>
+        </article>
+      </section>
+    </main>
 
     <script>
       (function () {
@@ -135,7 +130,7 @@
               return;
             }
 
-            alert('수정이 저장되었습니다.');
+            alert('수정 사항이 저장되었습니다.');
             window.location.reload();
           } catch (err) {
             console.error(err);
