@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>App</title>
+    <style>
+      img {
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/images/" method="post" enctype="multipart/form-data">
+      <div>
+        <label for="filePath">이미지 파일 업로드:</label>
+        <input type="file" id="filePath" name="filePath" accept="image/*" required />
+      </div>
+
+      <div>
+        <label for="artist">작가:</label>
+        <input type="text" id="artist" name="artist" required />
+      </div>
+
+      <div>
+        <label for="title">제목:</label>
+        <input type="text" id="title" name="title" required />
+      </div>
+
+      <div>
+        <label for="text">설명:</label>
+        <input type="text" id="text" name="text" />
+      </div>
+
+      <div>
+        <label for="tags">태그 (쉼표로 구분):</label>
+        <input type="text" id="tags" name="tags" placeholder="예: landscape,snow" />
+      </div>
+
+      <div>
+        <label for="earliestDate">촬영일(earliestDate):</label>
+        <input type="date" id="earliestDate" name="earliestDate" />
+      </div>
+
+      <div>
+        <label for="camera">카메라:</label>
+        <input type="text" id="camera" name="camera" />
+      </div>
+
+      <div>
+        <label for="materials">재료/세부정보 (쉼표로 구분):</label>
+        <input type="text" id="materials" name="materials" placeholder="예: 54mm,F4.3,1/100s,ISO400,0.0ev" />
+      </div>
+
+      <div>
+        <label for="dimensons">크기 (dimensons):</label>
+        <input type="text" id="dimensons" name="dimensons" placeholder="예: 1280 x 1920" />
+      </div>
+
+      <button type="submit">등록</button>
+    </form>
+
+    <ul>
+      {{#each images}}
+        <a href="/images/{{this.filePath}}">
+          <li>{{this.title}} - {{this.text}}</li>
+          <img src="img/{{this.filePath}}"></img>
+        </a>
+      {{/each}}
+    </ul>
+  </body>
+</html>
