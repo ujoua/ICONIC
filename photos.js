@@ -2,11 +2,21 @@ const galleryEl = document.querySelector(".gallery");
 const searchBar = document.getElementById("search-bar");
 const suggestions = document.getElementById("suggestions");
 
-let photos = PHOTOS.slice();
+let photos = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-  renderGallery(photos);
+  loadPhotos();
 });
+
+const loadPhotos = async () => {
+  try {
+    const response = await fetch("./photos-data.json");
+    photos = await response.json();
+    renderGallery(photos);
+  } catch (error) {
+    console.error("Failed to load photos data:", error);
+  }
+};
 
 const renderGallery = (filteredPhotos) => {
   galleryEl.innerHTML = "";
