@@ -1,69 +1,166 @@
+:root {
+    --bg: #f4f4f2;
+    --wall: #ffffff;
+    --ink: #0d0d0d;
+    --ink-soft: #5c5c5c;
+    --line: rgba(0, 0, 0, 0.08);
+    --line-strong: rgba(0, 0, 0, 0.14);
+    --shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.04);
+    --font-sans: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    --font-serif: "Noto Serif KR", "Apple SD Gothic Neo", serif;
+    --font-label: "IBM Plex Sans", system-ui, sans-serif;
+    --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+    --ease-depth: cubic-bezier(0.2, 0.75, 0.15, 1);
+    /* 벽면: JS가 --gallery-ry로 패닝 위치와 연동 */
+    --gallery-ry: -40deg;
+    --gallery-rx: 6deg;
+    --pan-x: 0px;
+    --scroll-p: 0;
+}
+
+html {
+    --scroll-p: 0;
+}
+
 * {
     -webkit-overflow-scrolling: touch;
     box-sizing: border-box;
-    /* overscroll-behavior: none; */
+    scrollbar-width: none;
 }
 
 a {
-    color: darkcyan;
+    color: inherit;
     text-decoration: none;
 }
 
 body {
-    z-index: 5;
     margin: 0;
-    padding: 0;
-    height: 101dvh;
-    background-color: rgb(240, 230, 220);
+    min-height: 101dvh;
+    overflow-x: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10+ */
+    user-select: none;
+    /* 표준 속성: 텍스트 선택 방지 */
+    -webkit-user-drag: none;
+    /* Safari/Chrome: 요소 드래그 방지 */
+}
+
+/* 스크롤 진행: 얇은 선만. 장식용 그라데이션 바 없음 */
+body::before {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 30;
+    height: 1px;
+    width: calc(100% * var(--scroll-p));
+    background: var(--ink);
+    opacity: 0.2;
+    transform-origin: left center;
+    transition: width 0.1s linear;
 }
 
 button {
     width: 100dvw;
     height: 100dvh;
-    background-color: black;
-    color: azure;
+    background: #0a0a0a;
+    color: #fafafa;
     position: fixed;
     inset: 0;
     z-index: 20;
     border: none;
-    font-size: 1.4rem;
-    letter-spacing: 0.4rem;
+    font-family: var(--font-serif);
+    font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+    font-weight: 500;
+    letter-spacing: 0.42em;
+    text-indent: 0.42em;
     cursor: pointer;
+    transition: background 0.35s var(--ease), color 0.35s var(--ease),
+        letter-spacing 0.5s var(--ease);
 }
 
-header {
-    z-index: -1;
-    width: 100%;
-    height: 48dvh;
+button:hover {
+    background: #141414;
+    letter-spacing: 0.48em;
+}
+
+header.site-frame {
     position: fixed;
     top: 0;
     left: 0;
-    background-color: rgb(245, 245, 245);
+    z-index: 10;
+    width: 100%;
+    padding: clamp(1rem, 3.5dvh, 1.5rem) clamp(1.25rem, 4vw, 2rem);
+    background: rgba(244, 244, 242, 0.92);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(8px);
 }
 
-main::-webkit-scrollbar {
+.museum-mark {
+    margin: 0;
+    font-family: var(--font-label);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+main.main-viewport::-webkit-scrollbar {
     display: none;
 }
 
-main {
-    /* Firefox */
-    scrollbar-width: none;
-    /* IE/Edge */
-    -ms-overflow-style: none;
-    scroll-snap-type: x proximity;
-    /* 삼성 인터넷 브라우저 max-content 버그 때문에 */
-    overflow-y: hidden;
+main.main-viewport:active {
+    cursor: grabbing;
+    /* 꽉 쥔 손바닥 모양 */
+}
 
+/*
+  네이티브 overflow-x 스크롤은 대부분의 브라우저에서 자식 3D를 평면으로 뭉갬.
+  가로 이동은 JS로 --pan-x(갤러리 스테이지 translateX)만 쓴다 — 벽(.gallery)은 overflow 밖에서 3D 유지.
+*/
+main.main-viewport {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-snap-type: none;
+    overflow: hidden;
     width: 100%;
-    max-height: 100vh;
+    max-height: 90vh;
+    /* padding-top: clamp(3rem, 10dvh, 4.5rem); */
+    outline: none;
+    touch-action: none;
+
+    cursor: grab;
+    /* 잡을 수 있는 손바닥 모양 */
+    user-select: none;
+    /* 드래그 시 텍스트가 선택되는 현상 방지 */
 
     perspective: 1200px;
-    /* transform-style: preserve-3d; */
+}
+
+.gallery-stage {
+    display: inline-block;
+    width: max-content;
+    min-width: 100%;
+    transform-style: preserve-3d;
+    transform: translate3d(calc(-1 * var(--pan-x, 0px)), 0, 0);
+    will-change: transform;
 }
 
 .gallery {
-    padding-left: 32vh;
-    padding-right: 32vh;
+    position: relative;
+    padding-left: clamp(14vh, 20vw, 28vh);
+    padding-right: clamp(14vh, 20vw, 28vh);
     width: max-content;
     min-width: 100%;
     height: 90dvh;
@@ -71,68 +168,310 @@ main {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 64vh;
+    gap: clamp(32vh, 46vh, 56vh);
 
-    background-color: floralwhite;
+    background: var(--wall);
+    border-top: 1px solid var(--line);
     box-shadow:
-        -17px -17px 1px rgba(230, 221, 205, 0.9), -16px -16px 1px rgba(230, 221, 205, 0.85), -15px -15px 1px rgba(230, 221, 205, 0.8), -14px -14px 1px rgba(230, 221, 205, 0.75),
-        -13px -13px 1px rgba(230, 221, 205, 0.7), -12px -12px 1px rgba(230, 221, 205, 0.65), -11px -11px 1px rgba(230, 221, 205, 0.6), -10px -10px 1px rgba(230, 221, 205, 0.55),
-        -9px -9px 1px rgba(230, 221, 205, 0.5), -8px -8px 1px rgba(230, 221, 205, 0.45), -6px -6px 1px rgba(230, 221, 205, 0.4), -5px -5px 1px rgba(230, 221, 205, 0.35),
-        -4px -4px 1px rgba(230, 221, 205, 0.3), -3px -3px 1px rgba(230, 221, 205, 0.25), -2px -2px 1px rgba(230, 221, 205, 0.2), -1px -1px 1px rgba(230, 221, 205, 0.15),
-
-        -18px -15px 5px rgba(230, 220, 205, 0.6),
-        -2px -0px 6px rgba(230, 220, 205, 0.8),
-        0px 4px 8px rgba(200, 200, 180, 0.3);
+        var(--shadow-soft),
+        -48px 0 64px rgba(0, 0, 0, 0.08),
+        0 32px 60px rgba(0, 0, 0, 0.08);
 
     transform-style: preserve-3d;
-    transform-origin: center left;
+    /* 왼쪽 모서리 기준으로 멀어질수록 멀어지게 — 원근이 화면에 잘 보임 */
+    transform-origin: left center;
+    /* transform: perspective(420px) rotateY(var(--gallery-ry, -40deg)) rotateX(var(--gallery-rx, 6deg)) translateZ(0); */
+    backface-visibility: hidden;
+
     /* animation: wallEnter 12.3s ease-out forwards; */
+    transform: rotateX(-4deg);
 }
 
 .gallery article {
     scroll-snap-align: center;
 }
 
-.gallery article[alt="주제"] {
-    padding: 8vh;
-    width: 75vh;
-    max-width: 90dvw;
-    max-height: 90dvh;
-    box-shadow:
-        1px 2px 4px rgba(0, 0, 0, 0.3),
-        3px 4px 6px rgba(0, 0, 0, 0.2),
-        0 8px 12px rgba(0, 0, 0, 0.15),
-        0 12px 20px rgba(0, 0, 0, 0.1);
+.gallery>article:nth-child(odd) {
+    align-self: flex-start;
+    margin-top: clamp(0.25rem, 3dvh, 1.75rem);
+}
+
+.gallery>article:nth-child(even) {
+    align-self: flex-end;
+    margin-bottom: clamp(0.25rem, 3.5dvh, 2rem);
+}
+
+.theme-panel {
+    width: min(72vh, 88vw);
+    max-width: 92dvw;
+    max-height: 88dvh;
+    padding: clamp(1.75rem, 5vh, 3rem) 0;
+    transform: translateZ(72px);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+
+    /*.gallery>article:nth-child(odd)에서 flex-start돼서 모바일에서 못 생겨지기 때문에*/
+    align-self: center !important;
+}
+
+.theme-panel__inner {
+    margin: 0;
+    padding-left: clamp(1rem, 2vw, 1.5rem);
+    border-left: 1px solid var(--line-strong);
+    animation: panelIn 0.85s var(--ease) 0.05s both;
+}
+
+.exhibition-index {
+    margin: 0 0 1rem;
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.theme-panel h1 {
+    margin: 0 0 1.25rem;
+    font-family: var(--font-serif);
+    font-size: clamp(2.25rem, 7.5vw, 3.75rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    color: var(--ink);
+}
+
+.theme-lead {
+    margin: 0 0 1.35rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1rem, 2.4vw, 1.2rem);
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--ink-soft);
+}
+
+.theme-whisper {
+    margin: 0 0 0.75rem;
+    max-width: 26em;
+    font-size: 0.8125rem;
+    line-height: 1.75;
+    font-weight: 400;
+    color: var(--ink-soft);
+}
+
+.theme-note {
+    margin: 0;
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #8a8a8a;
+}
+
+.gallery-next {
+    min-width: min(36vh, 82vw);
+    max-width: 88dvw;
+    padding: clamp(1.5rem, 3.5vh, 2rem) 0;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+}
+
+.gallery-next__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.gallery-next__hint {
+    margin: 0;
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #9a9a9a;
+}
+
+.gallery-next__link {
+    position: relative;
+    font-family: var(--font-sans);
+    font-size: clamp(0.875rem, 1.9vw, 0.95rem);
+    font-weight: 500;
+    color: var(--ink);
+    padding-bottom: 0.1rem;
+}
+
+.gallery-next__link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s var(--ease);
+    opacity: 0.35;
+}
+
+.gallery-next__link:hover::after {
+    transform: scaleX(1);
+    opacity: 1;
+}
+
+.gallery-next__arrow {
+    display: inline-block;
+    margin-left: 0.35em;
+    transition: transform 0.35s var(--ease);
+}
+
+.gallery-next__link:hover .gallery-next__arrow {
+    transform: translateX(3px);
+}
+
+/* 작품: 현대 미술관 액자 — 얇은 테, 과한 그림자 없음 */
+.gallery-item[data-tone="0"] {
+    --mat: #fafafa;
+    --frame: #e3e3e3;
+    --tag: #6e6e6e;
+}
+
+.gallery-item[data-tone="1"] {
+    --mat: #f8f8f8;
+    --frame: #dedede;
+    --tag: #666;
+}
+
+.gallery-item[data-tone="2"] {
+    --mat: #fbfbfb;
+    --frame: #e0e0e0;
+    --tag: #707070;
+}
+
+.gallery-item[data-tone="3"] {
+    --mat: #f9f9f9;
+    --frame: #dcdcdc;
+    --tag: #686868;
 }
 
 .gallery-item {
-    padding-bottom: 4vh;
-    height: 90%;
-    max-width: 90dvw;
+    --mat: #fafafa;
+    --frame: #e5e5e5;
+    --tag: #6e6e6e;
 
+    padding-bottom: 3vh;
+    height: 90%;
+    max-width: 88dvw;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 4vh 8vh;
+    gap: 3vh 6vh;
+
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
 }
 
 .gallery-item>img {
     max-width: 100%;
     max-height: 100%;
     flex: 0 1 0;
-
-    border: 16px solid #f5f5f5;
+    object-fit: cover;
+    display: block;
+    padding: 10px 10px 14px;
+    background: var(--mat);
+    border: 1px solid var(--frame);
+    transform: translateZ(0);
     box-shadow:
-        0 0 0 8px rgb(56, 48, 52),
-        0px 15px 5px rgba(0, 0, 0, 0.3),
-        0px 20px 8px rgba(0, 0, 0, 0.2),
-        -16px 12px 10px rgba(0, 0, 0, 0.1),
-        16px 12px 8px rgba(0, 0, 0, 0.15);
+        0 1px 3px rgba(0, 0, 0, 0.05),
+        12px 18px 28px rgba(0, 0, 0, 0.07);
+    transition:
+        transform 0.5s var(--ease-depth),
+        box-shadow 0.5s var(--ease-depth);
+}
+
+.gallery-item:hover>img {
+    transform: translateZ(36px);
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.06),
+        18px 28px 40px rgba(0, 0, 0, 0.1);
 }
 
 .gallery-item>span {
     flex: 0 1 0;
+    max-width: min(52ch, 90vw);
+}
+
+.gallery-item h3 {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-serif);
+    font-size: clamp(0.95rem, 2vw, 1.05rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
+}
+
+.gallery-item figcaption {
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-bottom: 0.35rem;
+}
+
+.gallery-item figcaption div+div {
+    margin-top: 0.1rem;
+}
+
+.gallery-item>span>p {
+    margin: 0.3rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.65;
+}
+
+.gallery-item>span>p strong {
+    font-weight: 500;
+}
+
+.gallery-item__tags {
+    margin: 0.4rem 0 0;
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--tag);
+}
+
+.gallery-item:not(.is-visible) {
+    opacity: 0;
+    transform: translate3d(0, 20px, -32px) rotateY(8deg);
+}
+
+.gallery-item.is-visible {
+    opacity: 1;
+    transform: translateZ(48px) rotateY(0deg);
+    transition:
+        opacity 0.7s var(--ease-depth),
+        transform 0.85s var(--ease-depth);
+    transition-delay: min(0.55s, calc(var(--reveal-order, 0) * 0.05s));
+}
+
+.gallery-next:not(.is-visible) {
+    opacity: 0;
+    transform: translate3d(0, 18px, -28px) rotateY(6deg);
+}
+
+.gallery-next.is-visible {
+    opacity: 1;
+    transform: translateZ(40px) rotateY(0deg);
+    transition:
+        opacity 0.7s var(--ease-depth),
+        transform 0.85s var(--ease-depth);
+    transition-delay: min(0.55s, calc(var(--reveal-order, 0) * 0.05s));
 }
 
 @keyframes fadeOut {
@@ -146,6 +485,20 @@ main {
     }
 }
 
+/* 입장 끝 = 기본 자세(-40deg / 6deg)와 맞춤 */
+/* @keyframes wallEnter {
+    0% {
+        transform: perspective(420px) rotateY(52deg) rotateX(11deg) translateZ(-95vh) translateX(72vw);
+    }
+
+    50% {
+        transform: perspective(420px) rotateY(10deg) rotateX(6deg) translateZ(-14vh) translateX(-6vw);
+    }
+
+    100% {
+        transform: perspective(420px) rotateY(-40deg) rotateX(6deg) translateZ(0) translateX(0);
+    }
+} */
 @keyframes wallEnter {
     0% {
         transform: rotateY(45deg) translateZ(-160vh) translateX(80vh);
@@ -162,4 +515,86 @@ main {
     100% {
         transform: rotateX(-4deg) rotateY(0deg) translateZ(0) translateX(0);
     }
+}
+
+@keyframes panelIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gallery {
+        transform: none;
+        -webkit-transform: none;
+        box-shadow: var(--shadow-soft);
+    }
+
+    .gallery-stage {
+        transform-style: flat;
+        will-change: auto;
+    }
+
+    button {
+        transition: none;
+    }
+
+    button:hover {
+        letter-spacing: 0.42em;
+    }
+
+    .theme-panel__inner {
+        animation: none;
+    }
+
+    .theme-panel {
+        transform: none;
+    }
+
+    .gallery-next__link::after,
+    .gallery-next__arrow {
+        transition: none;
+    }
+
+    .gallery-next__link:hover .gallery-next__arrow {
+        transform: none;
+    }
+
+    .gallery-item>img {
+        transition: none;
+    }
+
+    .gallery-item:hover>img {
+        transform: none;
+    }
+
+    .gallery-next.is-visible,
+    .gallery-item.is-visible,
+    .gallery-next:not(.is-visible),
+    .gallery-item:not(.is-visible) {
+        transition: none;
+        transition-delay: 0s;
+        opacity: 1;
+        transform: none;
+    }
+}
+
+img,
+article,
+span,
+h1,
+h3,
+p {
+    -webkit-user-drag: none;
+    /* 브라우저 기본 이미지 드래그 기능만 끔 */
+    user-select: none;
+    /* 텍스트 선택만 막음 */
+    pointer-events: auto;
+    /* 마우스 이벤트를 다시 받을 수 있게 함 */
 }
