@@ -55,7 +55,7 @@ body {
 }
 
 /* 스크롤 진행: 얇은 선만. 장식용 그라데이션 바 없음 */
-body::before {
+/* body::before {
     content: "";
     pointer-events: none;
     position: fixed;
@@ -68,7 +68,7 @@ body::before {
     opacity: 0.2;
     transform-origin: left center;
     transition: width 0.1s linear;
-}
+} */
 
 button {
     width: 100dvw;
@@ -98,7 +98,7 @@ header.site-frame {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 10;
+    /* z-index: 10; */
     width: 100%;
     padding: clamp(1rem, 3.5dvh, 1.5rem) clamp(1.25rem, 4vw, 2rem);
     background: rgba(244, 244, 242, 0.92);
@@ -184,7 +184,7 @@ main.main-viewport {
     backface-visibility: hidden;
 
     /* animation: wallEnter 12.3s ease-out forwards; */
-    transform: rotateX(-4deg);
+    /* transform: rotateX(-4deg); */
 }
 
 .gallery article {
@@ -275,6 +275,7 @@ main.main-viewport {
     padding: clamp(1.5rem, 3.5vh, 2rem) 0;
     transform-style: preserve-3d;
     backface-visibility: hidden;
+    z-index: 50;
 }
 
 .gallery-next__inner {
@@ -319,10 +320,10 @@ main.main-viewport {
     opacity: 0.35;
 }
 
-.gallery-next__link:hover::after {
+/* .gallery-next__link:hover::after {
     transform: scaleX(1);
     opacity: 1;
-}
+} */
 
 .gallery-next__arrow {
     display: inline-block;
@@ -330,9 +331,9 @@ main.main-viewport {
     transition: transform 0.35s var(--ease);
 }
 
-.gallery-next__link:hover .gallery-next__arrow {
+/* .gallery-next__link:hover .gallery-next__arrow {
     transform: translateX(3px);
-}
+} */
 
 /* 작품: 현대 미술관 액자 — 얇은 테, 과한 그림자 없음 */
 .gallery-item[data-tone="0"] {
@@ -513,7 +514,8 @@ main.main-viewport {
     }
 
     100% {
-        transform: rotateX(-4deg) rotateY(0deg) translateZ(0) translateX(0);
+        /* transform: rotateX(-4deg) rotateY(0deg) translateZ(0) translateX(0); */
+        transform: rotateY(0deg) translateZ(0) translateX(0);
     }
 }
 
@@ -529,7 +531,7 @@ main.main-viewport {
     }
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* @media (prefers-reduced-motion: reduce) {
     .gallery {
         transform: none;
         -webkit-transform: none;
@@ -562,39 +564,24 @@ main.main-viewport {
         transition: none;
     }
 
-    .gallery-next__link:hover .gallery-next__arrow {
+    /* .gallery-next__link:hover .gallery-next__arrow {
         transform: none;
-    }
+    } */
 
-    .gallery-item>img {
-        transition: none;
-    }
-
-    .gallery-item:hover>img {
-        transform: none;
-    }
-
-    .gallery-next.is-visible,
-    .gallery-item.is-visible,
-    .gallery-next:not(.is-visible),
-    .gallery-item:not(.is-visible) {
-        transition: none;
-        transition-delay: 0s;
-        opacity: 1;
-        transform: none;
-    }
+.gallery-item>img {
+    transition: none;
 }
 
-img,
-article,
-span,
-h1,
-h3,
-p {
-    -webkit-user-drag: none;
-    /* 브라우저 기본 이미지 드래그 기능만 끔 */
-    user-select: none;
-    /* 텍스트 선택만 막음 */
-    pointer-events: auto;
-    /* 마우스 이벤트를 다시 받을 수 있게 함 */
+.gallery-item:hover>img {
+    transform: none;
+}
+
+.gallery-next.is-visible,
+.gallery-item.is-visible,
+.gallery-next:not(.is-visible),
+.gallery-item:not(.is-visible) {
+    transition: none;
+    transition-delay: 0s;
+    opacity: 1;
+    transform: none;
 }

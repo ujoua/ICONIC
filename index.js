@@ -57,21 +57,35 @@ function onWheel(e) {
   syncPan();
 }
 
-let touchLastX = 0;
+// let touchLastX = 0;
+// let moved = false;
 
-function onTouchStart(ev) {
-  if (ev.touches.length !== 1) return;
-  touchLastX = ev.touches[0].clientX;
-}
+// function onTouchStart(ev) {
+//   if (ev.touches.length !== 1) return;
+//   touchLastX = ev.touches[0].clientX;
+//   moved = false;
+// }
 
-function onTouchMove(ev) {
-  if (ev.touches.length !== 1) return;
-  const x = ev.touches[0].clientX;
-  const dx = touchLastX - x;
-  touchLastX = x;
-  panX += dx;
-  syncPan();
-}
+// function onTouchMove(ev) {
+//   if (ev.touches.length !== 1) return;
+//   const x = ev.touches[0].clientX;
+//   const dx = touchLastX - x;
+
+//   if (Math.abs(dx) > 10) { // 10px 이상 움직였을 때만 드래그로 판단
+//     moved = true;
+//     panX += dx;
+//     syncPan();
+//   }
+
+//   touchLastX = x;
+// }
+
+// function onTouchEnd(ev) {
+//   if (!moved) {
+//     // 움직임이 거의 없으면 클릭으로 간주 → 기본 동작 허용
+//     // 아무 것도 막지 않음
+//   }
+// }
 
 function onKeyDown(ev) {
   if (ev.key !== "ArrowLeft" && ev.key !== "ArrowRight") return;
@@ -95,8 +109,8 @@ function bindPanControls() {
   if (!mainEl || !galleryStageEl) return;
 
   mainEl.addEventListener("wheel", onWheel, { passive: false });
-  mainEl.addEventListener("touchstart", onTouchStart, { passive: true });
-  mainEl.addEventListener("touchmove", onTouchMove, { passive: true });
+  // mainEl.addEventListener("touchstart", onTouchStart, { passive: true });
+  // mainEl.addEventListener("touchmove", onTouchMove, { passive: true });
   window.addEventListener("keydown", onKeyDown);
   window.addEventListener("resize", () => syncPan(), { passive: true });
   window.addEventListener("load", () => syncPan(), { once: true });
@@ -252,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ? photos.filter((photo) => hypeFileSet.has(photo.filePath))
         : photos;
 
-      renderGallery(source);
+      // renderGallery(source);
     } catch (error) {
       console.error("Failed to load photo data:", error);
     }
@@ -262,65 +276,65 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// PC에서도 터치로 횡스크롤
-const viewport = document.querySelector('.main-viewport');
-const root = document.documentElement;
+// // PC에서도 터치로 횡스크롤
+// const viewport = document.querySelector('.main-viewport');
+// const root = document.documentElement;
 
-let isDown = false;
-let startX;
-let scrollLeft;
-// let panX = 0; // 현재 이동 거리 저장용
+// let isDown = false;
+// let startX;
+// let scrollLeft;
+// // let panX = 0; // 현재 이동 거리 저장용
 
-// 1. 마우스 휠로 가로 이동 (이미 있다면 생략 가능)
-window.addEventListener('wheel', (e) => {
-  panX += e.deltaY; // 세로 휠 양만큼 더함
-  updateScroll();
-});
+// // 1. 마우스 휠로 가로 이동 (이미 있다면 생략 가능)
+// window.addEventListener('wheel', (e) => {
+//   panX += e.deltaY; // 세로 휠 양만큼 더함
+//   updateScroll();
+// });
 
-// 2. 마우스 드래그 시작
-window.addEventListener('mousedown', (e) => {
-  isDown = true;
-  viewport.style.cursor = 'grabbing';
-  startX = e.pageX;
-  scrollLeft = panX;
-});
+// // 2. 마우스 드래그 시작
+// window.addEventListener('mousedown', (e) => {
+//   isDown = true;
+//   viewport.style.cursor = 'grabbing';
+//   startX = e.pageX;
+//   scrollLeft = panX;
+// });
 
-// 3. 마우스 드래그 중
-window.addEventListener('mousemove', (e) => {
-  if (!isDown) return;
-  e.preventDefault();
+// // 3. 마우스 드래그 중
+// window.addEventListener('mousemove', (e) => {
+//   if (!isDown) return;
+//   e.preventDefault();
 
-  const x = e.pageX;
-  const walk = (startX - x) * 1.5; // 드래그 속도 조절 (1.5배)
-  panX = scrollLeft + walk;
+//   const x = e.pageX;
+//   const walk = (startX - x) * 1.5; // 드래그 속도 조절 (1.5배)
+//   panX = scrollLeft + walk;
 
-  updateScroll();
-});
+//   updateScroll();
+// });
 
-// 4. 마우스 떼기
-window.addEventListener('mouseup', () => {
-  isDown = false;
-  viewport.style.cursor = 'grab';
-});
+// // 4. 마우스 떼기
+// window.addEventListener('mouseup', () => {
+//   isDown = false;
+//   viewport.style.cursor = 'grab';
+// });
 
-window.addEventListener('mouseleave', () => {
-  isDown = false;
-});
+// window.addEventListener('mouseleave', () => {
+//   isDown = false;
+// });
 
-// 공통 업데이트 함수
-function updateScroll() {
-  // 갤러리 범위를 벗어나지 않게 제한 (선택 사항)
-  const galleryWidth = document.querySelector('.gallery').offsetWidth;
-  const maxScroll = galleryWidth - window.innerWidth;
+// // 공통 업데이트 함수
+// function updateScroll() {
+//   // 갤러리 범위를 벗어나지 않게 제한 (선택 사항)
+//   const galleryWidth = document.querySelector('.gallery').offsetWidth;
+//   const maxScroll = galleryWidth - window.innerWidth;
 
-  if (panX < 0) panX = 0;
-  if (panX > maxScroll) panX = maxScroll;
+//   if (panX < 0) panX = 0;
+//   if (panX > maxScroll) panX = maxScroll;
 
-  // CSS 변수 업데이트
-  // root.style.setProperty('--pan-x', `${panX}px`);
-  syncPan();
+//   // CSS 변수 업데이트
+//   // root.style.setProperty('--pan-x', `${panX}px`);
+//   syncPan();
 
-  // 진행바 업데이트 (기존 변수 활용)
-  const progress = panX / maxScroll;
-  root.style.setProperty('--scroll-p', progress);
-}
+//   // 진행바 업데이트 (기존 변수 활용)
+//   const progress = panX / maxScroll;
+//   root.style.setProperty('--scroll-p', progress);
+// }
