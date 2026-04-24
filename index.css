@@ -83,6 +83,7 @@ main::-webkit-scrollbar {
 main {
     scrollbar-width: none;
     -ms-overflow-style: none;
+    /* scrollbar-width: thin; */
     scroll-snap-type: x proximity;
 
     /* 삼성 인터넷 브라우저 max-content 버그 때문에 */
@@ -257,6 +258,12 @@ main {
     transition:
         transform 0.5s var(--ease-depth),
         box-shadow 0.5s var(--ease-depth);
+
+    -webkit-font-smoothing: antialiased;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 .gallery-item:hover>img {
