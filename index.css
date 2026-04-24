@@ -11,21 +11,12 @@
     --font-label: "IBM Plex Sans", system-ui, sans-serif;
     --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
     --ease-depth: cubic-bezier(0.2, 0.75, 0.15, 1);
-    /* 벽면: JS가 --gallery-ry로 패닝 위치와 연동 */
-    --gallery-ry: -40deg;
-    --gallery-rx: 6deg;
-    --pan-x: 0px;
-    --scroll-p: 0;
-}
-
-html {
-    --scroll-p: 0;
 }
 
 * {
     -webkit-overflow-scrolling: touch;
     box-sizing: border-box;
-    scrollbar-width: none;
+    /* overscroll-behavior: none; */
 }
 
 a {
@@ -34,47 +25,28 @@ a {
 }
 
 body {
+    z-index: 5;
     margin: 0;
-    min-height: 101dvh;
-    overflow-x: hidden;
+    padding: 0;
+    height: 101dvh;
     background: var(--bg);
     color: var(--ink);
     font-family: var(--font-sans);
     font-weight: 400;
     font-size: 15px;
+
     -webkit-font-smoothing: antialiased;
-
     -webkit-user-select: none;
-    /* Safari */
     -ms-user-select: none;
-    /* IE 10+ */
     user-select: none;
-    /* 표준 속성: 텍스트 선택 방지 */
     -webkit-user-drag: none;
-    /* Safari/Chrome: 요소 드래그 방지 */
 }
-
-/* 스크롤 진행: 얇은 선만. 장식용 그라데이션 바 없음 */
-/* body::before {
-    content: "";
-    pointer-events: none;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 30;
-    height: 1px;
-    width: calc(100% * var(--scroll-p));
-    background: var(--ink);
-    opacity: 0.2;
-    transform-origin: left center;
-    transition: width 0.1s linear;
-} */
 
 button {
     width: 100dvw;
     height: 100dvh;
-    background: #0a0a0a;
-    color: #fafafa;
+    background-color: black;
+    color: azure;
     position: fixed;
     inset: 0;
     z-index: 20;
@@ -94,73 +66,38 @@ button:hover {
     letter-spacing: 0.48em;
 }
 
-header.site-frame {
+header {
+    z-index: -1;
+    width: 100%;
+    height: 48dvh;
     position: fixed;
     top: 0;
     left: 0;
-    /* z-index: 10; */
-    width: 100%;
-    padding: clamp(1rem, 3.5dvh, 1.5rem) clamp(1.25rem, 4vw, 2rem);
-    background: rgba(244, 244, 242, 0.92);
-    border-bottom: 1px solid var(--line);
-    backdrop-filter: blur(8px);
+    background-color: rgb(252, 252, 252);
 }
 
-.museum-mark {
-    margin: 0;
-    font-family: var(--font-label);
-    font-size: 0.6875rem;
-    font-weight: 500;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-}
-
-main.main-viewport::-webkit-scrollbar {
+main::-webkit-scrollbar {
     display: none;
 }
 
-main.main-viewport:active {
-    cursor: grabbing;
-    /* 꽉 쥔 손바닥 모양 */
-}
-
-/*
-  네이티브 overflow-x 스크롤은 대부분의 브라우저에서 자식 3D를 평면으로 뭉갬.
-  가로 이동은 JS로 --pan-x(갤러리 스테이지 translateX)만 쓴다 — 벽(.gallery)은 overflow 밖에서 3D 유지.
-*/
-main.main-viewport {
+main {
     scrollbar-width: none;
     -ms-overflow-style: none;
-    scroll-snap-type: none;
-    overflow: hidden;
-    width: 100%;
-    max-height: 90vh;
-    /* padding-top: clamp(3rem, 10dvh, 4.5rem); */
-    outline: none;
-    touch-action: none;
+    scroll-snap-type: x proximity;
 
-    cursor: grab;
-    /* 잡을 수 있는 손바닥 모양 */
-    user-select: none;
-    /* 드래그 시 텍스트가 선택되는 현상 방지 */
+    /* 삼성 인터넷 브라우저 max-content 버그 때문에 */
+    overflow-y: hidden;
+
+    width: 100%;
+    max-height: 100vh;
 
     perspective: 1200px;
-}
-
-.gallery-stage {
-    display: inline-block;
-    width: max-content;
-    min-width: 100%;
-    transform-style: preserve-3d;
-    transform: translate3d(calc(-1 * var(--pan-x, 0px)), 0, 0);
-    will-change: transform;
+    /* transform-style: preserve-3d; */
 }
 
 .gallery {
-    position: relative;
-    padding-left: clamp(14vh, 20vw, 28vh);
-    padding-right: clamp(14vh, 20vw, 28vh);
+    padding-left: 32vh;
+    padding-right: 32vh;
     width: max-content;
     min-width: 100%;
     height: 90dvh;
@@ -168,50 +105,39 @@ main.main-viewport {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: clamp(32vh, 46vh, 56vh);
+    gap: 64vh;
 
-    background: var(--wall);
+    background-color: var(--wall);
     border-top: 1px solid var(--line);
     box-shadow:
-        var(--shadow-soft),
-        -48px 0 64px rgba(0, 0, 0, 0.08),
-        0 32px 60px rgba(0, 0, 0, 0.08);
+        -17px -17px 1px rgba(245, 235, 215, 0.9), -16px -16px 1px rgba(230, 221, 205, 0.85), -15px -15px 1px rgba(230, 221, 205, 0.8), -14px -14px 1px rgba(230, 221, 205, 0.75),
+        -13px -13px 1px rgba(245, 235, 215, 0.7), -12px -12px 1px rgba(230, 221, 205, 0.65), -11px -11px 1px rgba(230, 221, 205, 0.6), -10px -10px 1px rgba(230, 221, 205, 0.55),
+        -9px -9px 1px rgba(245, 235, 215, 0.5), -8px -8px 1px rgba(230, 221, 205, 0.45), -6px -6px 1px rgba(230, 221, 205, 0.4), -5px -5px 1px rgba(230, 221, 205, 0.35),
+        -4px -4px 1px rgba(245, 235, 215, 0.3), -3px -3px 1px rgba(230, 221, 205, 0.25), -2px -2px 1px rgba(230, 221, 205, 0.2), -1px -1px 1px rgba(230, 221, 205, 0.15),
+
+        -18px -15px 5px rgba(245, 235, 215, 0.6),
+        -2px -0px 6px rgba(245, 235, 215, 0.8),
+        0px 4px 8px rgba(200, 200, 180, 0.3);
 
     transform-style: preserve-3d;
-    /* 왼쪽 모서리 기준으로 멀어질수록 멀어지게 — 원근이 화면에 잘 보임 */
-    transform-origin: left center;
-    /* transform: perspective(420px) rotateY(var(--gallery-ry, -40deg)) rotateX(var(--gallery-rx, 6deg)) translateZ(0); */
-    backface-visibility: hidden;
-
+    transform-origin: center left;
     /* animation: wallEnter 12.3s ease-out forwards; */
-    /* transform: rotateX(-4deg); */
 }
 
 .gallery article {
     scroll-snap-align: center;
 }
 
-.gallery>article:nth-child(odd) {
-    align-self: flex-start;
-    margin-top: clamp(0.25rem, 3dvh, 1.75rem);
-}
-
-.gallery>article:nth-child(even) {
-    align-self: flex-end;
-    margin-bottom: clamp(0.25rem, 3.5dvh, 2rem);
-}
-
 .theme-panel {
+    padding: 8vh;
     width: min(72vh, 88vw);
     max-width: 92dvw;
     max-height: 88dvh;
-    padding: clamp(1.75rem, 5vh, 3rem) 0;
-    transform: translateZ(72px);
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-
-    /*.gallery>article:nth-child(odd)에서 flex-start돼서 모바일에서 못 생겨지기 때문에*/
-    align-self: center !important;
+    /* box-shadow:
+        1px 2px 4px rgba(0, 0, 0, 0.3),
+        3px 4px 6px rgba(0, 0, 0, 0.2),
+        0 8px 12px rgba(0, 0, 0, 0.15),
+        0 12px 20px rgba(0, 0, 0, 0.1); */
 }
 
 .theme-panel__inner {
@@ -221,7 +147,7 @@ main.main-viewport {
     animation: panelIn 0.85s var(--ease) 0.05s both;
 }
 
-.exhibition-index {
+.theme-index {
     margin: 0 0 1rem;
     font-family: var(--font-label);
     font-size: 0.625rem;
@@ -269,73 +195,7 @@ main.main-viewport {
     color: #8a8a8a;
 }
 
-.gallery-next {
-    min-width: min(36vh, 82vw);
-    max-width: 88dvw;
-    padding: clamp(1.5rem, 3.5vh, 2rem) 0;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-    z-index: 50;
-}
 
-.gallery-next__inner {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.6rem;
-    padding-bottom: 0.25rem;
-    border-bottom: 1px solid var(--line);
-}
-
-.gallery-next__hint {
-    margin: 0;
-    font-family: var(--font-label);
-    font-size: 0.625rem;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #9a9a9a;
-}
-
-.gallery-next__link {
-    position: relative;
-    font-family: var(--font-sans);
-    font-size: clamp(0.875rem, 1.9vw, 0.95rem);
-    font-weight: 500;
-    color: var(--ink);
-    padding-bottom: 0.1rem;
-}
-
-.gallery-next__link::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 1px;
-    background: var(--ink);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.35s var(--ease);
-    opacity: 0.35;
-}
-
-/* .gallery-next__link:hover::after {
-    transform: scaleX(1);
-    opacity: 1;
-} */
-
-.gallery-next__arrow {
-    display: inline-block;
-    margin-left: 0.35em;
-    transition: transform 0.35s var(--ease);
-}
-
-/* .gallery-next__link:hover .gallery-next__arrow {
-    transform: translateX(3px);
-} */
-
-/* 작품: 현대 미술관 액자 — 얇은 테, 과한 그림자 없음 */
 .gallery-item[data-tone="0"] {
     --mat: #fafafa;
     --frame: #e3e3e3;
@@ -365,29 +225,32 @@ main.main-viewport {
     --frame: #e5e5e5;
     --tag: #6e6e6e;
 
-    padding-bottom: 3vh;
+    padding-bottom: 4vh;
     height: 90%;
-    max-width: 88dvw;
+    max-width: 90dvw;
+
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 3vh 6vh;
-
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
+    gap: 4vh 8vh;
 }
 
 .gallery-item>img {
     max-width: 100%;
     max-height: 100%;
     flex: 0 1 0;
-    object-fit: cover;
-    display: block;
+
     padding: 10px 10px 14px;
     background: var(--mat);
     border: 1px solid var(--frame);
-    transform: translateZ(0);
+    /* border: 16px solid #f5f5f5; */
+    /* box-shadow:
+        0 0 0 8px rgb(56, 48, 52),
+        0px 15px 5px rgba(0, 0, 0, 0.3),
+        0px 20px 8px rgba(0, 0, 0, 0.2),
+        -16px 12px 10px rgba(0, 0, 0, 0.1),
+        16px 12px 8px rgba(0, 0, 0, 0.15); */
     box-shadow:
         0 1px 3px rgba(0, 0, 0, 0.05),
         12px 18px 28px rgba(0, 0, 0, 0.07);
@@ -447,32 +310,71 @@ main.main-viewport {
     color: var(--tag);
 }
 
-.gallery-item:not(.is-visible) {
-    opacity: 0;
-    transform: translate3d(0, 20px, -32px) rotateY(8deg);
+
+.next-panel {
+    min-width: min(36vh, 82vw);
+    max-width: 88dvw;
+    padding: clamp(1.5rem, 3.5vh, 2rem) 0;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    z-index: 50;
 }
 
-.gallery-item.is-visible {
+.next-panel__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.next-panel__hint {
+    margin: 0;
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #9a9a9a;
+}
+
+.next-panel__link {
+    position: relative;
+    font-family: var(--font-sans);
+    font-size: clamp(0.875rem, 1.9vw, 0.95rem);
+    font-weight: 500;
+    color: var(--ink);
+    padding-bottom: 0.1rem;
+}
+
+.next-panel__link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s var(--ease);
+    opacity: 0.35;
+}
+
+.next-panel__link:hover::after {
+    transform: scaleX(1);
     opacity: 1;
-    transform: translateZ(48px) rotateY(0deg);
-    transition:
-        opacity 0.7s var(--ease-depth),
-        transform 0.85s var(--ease-depth);
-    transition-delay: min(0.55s, calc(var(--reveal-order, 0) * 0.05s));
 }
 
-.gallery-next:not(.is-visible) {
-    opacity: 0;
-    transform: translate3d(0, 18px, -28px) rotateY(6deg);
+.next-panel__arrow {
+    display: inline-block;
+    margin-left: 0.35em;
+    transition: transform 0.35s var(--ease);
 }
 
-.gallery-next.is-visible {
-    opacity: 1;
-    transform: translateZ(40px) rotateY(0deg);
-    transition:
-        opacity 0.7s var(--ease-depth),
-        transform 0.85s var(--ease-depth);
-    transition-delay: min(0.55s, calc(var(--reveal-order, 0) * 0.05s));
+.next-panel__link:hover .next-panel__arrow {
+    transform: translateX(3px);
 }
 
 @keyframes fadeOut {
@@ -486,20 +388,6 @@ main.main-viewport {
     }
 }
 
-/* 입장 끝 = 기본 자세(-40deg / 6deg)와 맞춤 */
-/* @keyframes wallEnter {
-    0% {
-        transform: perspective(420px) rotateY(52deg) rotateX(11deg) translateZ(-95vh) translateX(72vw);
-    }
-
-    50% {
-        transform: perspective(420px) rotateY(10deg) rotateX(6deg) translateZ(-14vh) translateX(-6vw);
-    }
-
-    100% {
-        transform: perspective(420px) rotateY(-40deg) rotateX(6deg) translateZ(0) translateX(0);
-    }
-} */
 @keyframes wallEnter {
     0% {
         transform: rotateY(45deg) translateZ(-160vh) translateX(80vh);
@@ -514,74 +402,6 @@ main.main-viewport {
     }
 
     100% {
-        /* transform: rotateX(-4deg) rotateY(0deg) translateZ(0) translateX(0); */
-        transform: rotateY(0deg) translateZ(0) translateX(0);
+        transform: rotateX(-4deg) rotateY(0deg) translateZ(0) translateX(0);
     }
-}
-
-@keyframes panelIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* @media (prefers-reduced-motion: reduce) {
-    .gallery {
-        transform: none;
-        -webkit-transform: none;
-        box-shadow: var(--shadow-soft);
-    }
-
-    .gallery-stage {
-        transform-style: flat;
-        will-change: auto;
-    }
-
-    button {
-        transition: none;
-    }
-
-    button:hover {
-        letter-spacing: 0.42em;
-    }
-
-    .theme-panel__inner {
-        animation: none;
-    }
-
-    .theme-panel {
-        transform: none;
-    }
-
-    .gallery-next__link::after,
-    .gallery-next__arrow {
-        transition: none;
-    }
-
-    /* .gallery-next__link:hover .gallery-next__arrow {
-        transform: none;
-    } */
-
-.gallery-item>img {
-    transition: none;
-}
-
-.gallery-item:hover>img {
-    transform: none;
-}
-
-.gallery-next.is-visible,
-.gallery-item.is-visible,
-.gallery-next:not(.is-visible),
-.gallery-item:not(.is-visible) {
-    transition: none;
-    transition-delay: 0s;
-    opacity: 1;
-    transform: none;
 }
